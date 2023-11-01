@@ -27,9 +27,9 @@
 
 ###工作区和暂存区：
 - 暂存区（stage）+ 分支仓库（master)
-- 进行add之后      <img src="/Users/lutao/Documents/LTXWorld.github.io/assets/blog_res/image-20231101103713597.png" alt="image-20231101103713597" style="zoom:50%;" />
-- 进行commit之后<img src="/Users/lutao/Documents/LTXWorld.github.io/assets/blog_res/image-20231101103744148.png" alt="image-20231101103744148" style="zoom:50%;" />
-- 详解status和diff：<img src="/Users/lutao/Documents/LTXWorld.github.io/assets/blog_res/image-20231101104644468.png" alt="image-20231101104644468" style="zoom:50%;" />
+- 进行add之后      <img src="/Users/lutao/GitT/Pic/image-20231101103713597.png" style="zoom:50%;" />
+- 进行commit之后<img src="/Users/lutao/GitT/Pic/image-20231101103744148.png" style="zoom:50%;" />
+- 详解status和diff：<img src="/Users/lutao/GitT/Pic/image-20231101104644468.png" style="zoom:50%;" />
 - 对于刚刚更改过的文件，status显示其还没在暂存区里也还没有提交；对于新建的文件，显示未被跟踪除非你暂存。
 
 ###Git管理的是修改而不是文件：
@@ -80,6 +80,6 @@ git branch -d name//删除指定的分支
 (对方的更改)
 >>>>>>> (对方的分支名)
 ```
-- 当你在两个分支都进行了更改并提交到本地库时：  <img src="/Users/lutao/Documents/LTXWorld.github.io/assets/blog_res/image-20231101200649104.png" alt="image-20231101200649104" style="zoom:50%;" />
-- 合并之后（经历了更改再提交）的结果：<img src="/Users/lutao/Documents/LTXWorld.github.io/assets/blog_res/image-20231101200829939.png" alt="image-20231101200829939" style="zoom:50%;" />
+- 当你在两个分支都进行了更改并提交到本地库时：  <img src="/Users/lutao/GitT/Pic/image-20231101200649104.png" style="zoom:50%;" />
+- 合并之后（经历了更改再提交）的结果：<img src="/Users/lutao/GitT/Pic/image-20231101200829939.png" style="zoom:50%;" />
 
