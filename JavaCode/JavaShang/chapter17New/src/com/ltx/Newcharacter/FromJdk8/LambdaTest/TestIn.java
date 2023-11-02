@@ -7,7 +7,8 @@ package com.ltx.Newcharacter.FromJdk8.LambdaTest;
 public class TestIn {
     public static void main(String[] args) {
         InterFaceFundation interFaceFundation = () -> {
-            System.out.println();
-        }
+            System.out.println("xxxxx");
+        };
+        interFaceFundation.method();
     }
 }
