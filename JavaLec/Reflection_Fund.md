@@ -3,7 +3,7 @@
 - 动态语言的关键所在，允许在运行期间借助Reflection API获得任何类的内部信息（一种新的造对象，调方法的方式）
 - 例如多态时由于编译类型左边（通常都是父类）我们不能直接调用运行类型（实际类型）的属性，所以引出反射，可以动态地识别对象的实际类型。
 - ==反射可以绕过多态，直接访问和操作对象的实际类型和数据==。
-- 通常使用在**框架**当中（灵活动态）
+- 通常使用在**框架**当中（*灵活动态*）
 - 封装表示的是是否建议使用、反射体现的是是否能够使用
 
 ###作用：
@@ -141,5 +141,62 @@ public void test4(){
 	//获取所在的包
 	Class pack = clazz.getPackage;
 	//
+}
+```
+###调用指定的内容：（更重要）
+####指定属性：
+- 调用指定的属性三步通用步骤
+```java
+//先获取运行时类的对象:clazz是运行时类，per是其对象
+//获取对象的属性：
+Field ageField = clazz.getField("age");
+//设置属性的值
+ageField.set(per,2);//以上操作是基于age为public
+
+//无论权限如何都能取得到：使用getDeclaredField
+//1获取运行时类的实例的指定名称的属性：
+Field nameField = clazz.getDeclaredField("name");
+//2确保属性可以访问
+nameField.setAccessible(true);
+//3可进行set和get
+nameField.set(per,"Tom");
+- 注意静态属性要传类名
+```
+####指定方法
+
+```java
+//1调用方法，创造方法实例
+Method showNationMethod = clazz.getDeclaredMethod(name:"showNation",String.class,int.class);//这里的参数即为Nation方法中的形参
+//2设置权限
+showNationMethod.setAccessible(true);
+//3方法实例 使用invoke方法，invoke的返回值即为对应方法的返回值。如果原方法为void，则返回值为null
+showNationMethod.invoke(per,"CHN",10);
+```
+####指定构造器
+- 注意，既然调用构造器，*刚开始不需要进行实例化对象*。调出构造器后再去实例化对象
+```java
+//1获取指定参数的构造器
+Constructor constructor = clazz.getDeclaredConstructor(String.class,int.class);
+//2权限
+constructor.setAccessible(true);
+//3调用newInstance返回一个运行时类的实例
+Person per = (Person) constructor.newInstance("R",10);
+```
+###获取指定的注解
+
+##框架中用体现动态性
+- 其实就是别把类名方法名写死，在使用反射调用运行时类的时候可以让用户自己去选择调用其中的哪些
+- 实际上这些参数都是开发时别的地方传过来的，而其余部分如调用方法什么的都是已经写好在框架里面的
+1. 返回一个未知类名的对象
+
+```java
+//类名为className，调用此方法时传入
+public <T> T getInstance(String className) throws Exception{
+	Class clazz = Class.forName(className);
+	//获得对应运行时类的构造器
+	Constructor con = clazz.getDeclaredConstructor();
+	con.setAccessible(true);
+	
+	return (T) con.newInstance();//返回T类型的对象
 }
 ```
