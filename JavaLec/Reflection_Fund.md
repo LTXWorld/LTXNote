@@ -8,12 +8,12 @@
 
 ###作用：
 
-<img src="../../../GitT/Pic/image-20231031083929099.png" alt="image-20231031083929099" style="zoom:50%;" />
+<img src="../Pic/image-20231031083929099.png" alt="image-20231031083929099" style="zoom:50%;" />
 
 ##举例
 ###基础调用
 
-<img src="../../LTXWorld.github.io/assets/blog_res/image-20231031084014991.png" alt="image-20231031084014991" style="zoom:33%;" />
+<img src="../Pic/image-20231031084014991.png" alt="image-20231031084014991" style="zoom:50%;" />
 
 ```java
 package com.ltx.reflection.Test;
