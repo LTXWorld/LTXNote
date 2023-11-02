@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/AlgrithmCourse/AlgrithmCourse.iml" filepath="$PROJECT_DIR$/AlgrithmCourse/AlgrithmCourse.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JavaShang.iml" filepath="$PROJECT_DIR$/JavaShang.iml" />
+      <module fileurl="file://$PROJECT_DIR$/LeecodeDebug/LeecodeDebug.iml" filepath="$PROJECT_DIR$/LeecodeDebug/LeecodeDebug.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chapter04/chapter04.iml" filepath="$PROJECT_DIR$/chapter04/chapter04.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chapter05/chapter05_array.iml" filepath="$PROJECT_DIR$/chapter05/chapter05_array.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chapter06OOP/chapter06OOP.iml" filepath="$PROJECT_DIR$/chapter06OOP/chapter06OOP.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chapter07Thread/chapter07Thread.iml" filepath="$PROJECT_DIR$/chapter07Thread/chapter07Thread.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chapter08ApiTeach/chapter08ApiTeach.iml" filepath="$PROJECT_DIR$/chapter08ApiTeach/chapter08ApiTeach.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chapter09FilewithIO/chapter09FilewithIO.iml" filepath="$PROJECT_DIR$/chapter09FilewithIO/chapter09FilewithIO.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chapter16_net/chapter16_net.iml" filepath="$PROJECT_DIR$/chapter16_net/chapter16_net.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chapter7_Reflect/chapter7_Reflect.iml" filepath="$PROJECT_DIR$/chapter7_Reflect/chapter7_Reflect.iml" />
+    </modules>
+  </component>
+</project>
