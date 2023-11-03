@@ -57,5 +57,5 @@ public class Test2 {
 
         BiPredicate<String,String> biPredicate1 = String::equals;//类名::非静态方法
     }
-    
+
 }
