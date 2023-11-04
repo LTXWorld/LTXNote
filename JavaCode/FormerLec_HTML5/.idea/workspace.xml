@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="a82d0692-a608-46aa-b199-4b24145205ad" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../../FormerLec/HTML5教程01.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FormerLec_HTML5.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Resource/Video/2-2.字符串结束符的那些事儿.ev4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Resource/audio/不能说的秘密.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Resource/image/蓝底证件照.JPG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/html/1.MyFirstHTML.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/html/2.基本标签.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/html/3.图像标签.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/html/4.LianJie.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/html/5.liebiao.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/html/6.Table.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/html/7.Media.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Pic/image-20231104155222548.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Pic/image-20231104160756697.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Pic/image-20231104161405700.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Pic/image-20231104171139734.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Pic/image-20231104173212300.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Pic/image-20231104192439198.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Pic/image-20231104192854801.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Pic/image-20231104194506882.png" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="ProjectId" id="2Xhcf7EaBHt86n79Uzvtwh12PAn" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Resource/Video" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\GitT\JavaCode\FormerLec_HTML5\Resource\Video" />
+      <recent name="E:\GitT\JavaCode\FormerLec_HTML5\Resource\audio" />
+      <recent name="E:\GitT\JavaCode\FormerLec_HTML5\Resource\image" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a82d0692-a608-46aa-b199-4b24145205ad" name="Default Changelist" comment="" />
+      <created>1699084854897</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1699084854897</updated>
+      <workItem from="1699084856308" duration="10869000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
