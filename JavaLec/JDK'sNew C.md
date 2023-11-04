@@ -230,3 +230,7 @@ BinaryOperator<Integer> binaryOperator = new BinaryOperator<Integer>() {
 ```java
 //使用collect(Collectors.tolist)
 ```
+
+## JDK 17 New:
+### Try-catch的设计
+- 可以将流写在try的外面，流之后会自动关闭，不需要再写finally了。
