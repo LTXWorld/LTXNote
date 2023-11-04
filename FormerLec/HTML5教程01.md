@@ -2,7 +2,7 @@
 ## What is HTML
 - Hyper Text Markup Language(超文本标记语言)；由W3C(万维网联盟)管理
 - 超文本：文本、视频、图片等等
-- 具体浏览器中：<img src="E:\GitT\Pic\image-20231104155222548.png" alt="image-20231104155222548" style="zoom:50%;" />
+- 具体浏览器中：<img src="./../Pic/image-20231104155222548.png" alt="image-20231104155222548" style="zoom:50%;" />
 - W3C标准：结构化标准（HTML.XML)、表现标准(CSS)、行为标准(DOM)
 
 ### 在IDEA中创建HTML网页
