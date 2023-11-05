@@ -28,6 +28,7 @@
 - img标签并且带上属性：<img src="./../Pic/image-20231104171139734.png" alt="image-20231104171139734" style="zoom:50%;" />
 - 其中==*src和art是必须要有的*==，src推荐使用相对路径，art表示图片加载失败时显示的文字;其他的内容可以自行选择添加
 - `<img src="../Resource/image/蓝底证件照.JPG" alt="LTX" title="悬停文字LTX"width="300"height="300"> `
+- <img src="./../Pic/image-20231105105108014.png" alt="image-20231105105108014" style="zoom:50%;" />
 
 #### 链接标签：
 - **超链接标签**：可以点击的那些链接，写代码时 a+Tab：<img src="./../Pic/image-20231104173212300.png" alt="image-20231104173212300" style="zoom:50%;" />
@@ -161,3 +162,164 @@ controls可以控制视频区域,autoplay可以自动播放
 </body>
 ```
 ### iframe内联框架
+
+- 在一个网站中嵌入另外一个网站： <img src="./../Pic/image-20231105095533594.png" alt="image-20231105095533594" style="zoom:50%;" />
+- 这与a标签（超链接）是不同的，内联框架是在父页面中出现其他页面（src）；而超链接是跳转到另外的页面。
+- ==`<a>` 标签是将用户从当前页面带到一个新的位置，而 `<iframe>` 是在当前页面中直接显示另一个页面的内容。==
+- <img src="./../Pic/image-20231105104737100.png" alt="image-20231105104737100" style="zoom:50%;" />
+
+```html
+<body>
+<!-- iframe
+src:地址
+w-h:宽度高度
+name
+-->
+
+<!-- <iframe src="//player.bilibili.com/player.html?aid=55631961&bvid=BV1x4411V75C&cid=97257967&p=11"
+        scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+-->
+<iframe src="" name="hello" frameborder="0" width="900px"height="900px"></iframe>
+<a href="https://github.com/LTXWorld/LTXNote"target="hello">点击跳转</a> 
+    <!-- name:这样当点击这个链接时，链接的URL会在指定的<iframe>中打开，而不是在当前页面或新标签页中打开 -->
+</body>
+```
+
+- `name`属性定义了一个名称，用于标识这个`<iframe>`。这个名称可以被用作目标(target);*与`<a>`标签连用可以点击超链接但在本页面指定的框架中打开*
+
+### 表单操作（Input）
+- `<form>`，注意将表单的具体内容写在两个form之间
+- action:提交位置，表单提交可以到网站或者请求处理地址；method:提交方式，*get可以在url中看到提交的名称和密码（但高效），post方式看不见，但可以传输大文件。*
+- 注意，**对这些表单的基本控件都要为其加名称，加name**
+- <img src="./../Pic/image-20231105104514870.png" alt="image-20231105104514870" style="zoom:50%;" />
+```html
+<body>
+
+<h1>注册</h1>
+
+<!-- 表单form
+action:提交位置，表单提交可以到网站或者请求处理地址
+method:提交方式，只有post get
+get可以在url中看到提交的名称和密码（但高效），post方式看不见
+post也可以传输大文件。
+-->
+<form action="1.MyFirstHTML.html" method="get">
+  <p>Name: <input type="text" name="username"></p>
+  <!--密码框的type要注意-->
+  <p>Password <input type="password" name="password"></p>
+
+  <p><input type="submit">
+    <input type="reset">
+  </p>
+</form>
+<!-- 文本输入框 -->
+
+</body>
+```
+
+####  文本框标签
+- 其中`input`标签也很重要，创建出的文本框。其中的属性有如下几个：但还有其他的如下面的` file,email`等等<img src="./../Pic/image-20231105105437619.png" alt="image-20231105105437619" style="zoom:50%;" />
+- <img src="./../Pic/image-20231105131424827.png" alt="image-20231105131424827" style="zoom:33%;" />
+
+```html
+  <!-- 文本输入框，
+  value 默认初始值
+  maxlength 最长能写几个字符
+  size 文本框的长度
+  -->  
+  <p>Name: <input type="text" name="username" value="111" maxlength="10" size="30"></p>
+  <!--密码框的type要注意-->
+  <p>
+      Password <input type="password" name="password">
+  </p>
+  <!-- 单选框标签
+  input type = radio
+  value :单选框的值
+  name:表示组，组一样时只能选一个
+  -->
+  <p>性别：
+      <input type="radio" value="boy"name="sex"/>男
+      <input type="radio" value="girl"name="sex"/>女
+  </p>
+  <!-- 多选框
+
+  -->
+  <p>
+      <input type="checkbox"value="sleep"name="hobby">睡觉
+      <input type="checkbox"value="chat"name="hobby">聊天
+      <input type="checkbox"value="play"name="hobby">打搅
+  </p>
+  <!-- 按钮
+  button普通按钮
+  image图片按钮，点击后可以达到提交的效果
+  submit提交按钮
+  reset重置按钮
+  -->
+  <p>按钮
+      <input type="button" name="buton1"value="点击变长">
+      <input type="image"src="../Resource/image/iu.jpg.webp">
+  </p>
+  <p><input type="submit">
+    <input type="reset">
+  </p>
+```
+#### 列表框和文本域
+
+- 下拉框，文本域，文件域
+- <img src="./../Pic/image-20231105132805343.png" alt="image-20231105132805343" style="zoom:33%;" />
+
+```html
+  <p>下拉框
+      <select name="列表名称" id="">
+          <option value="选项的值">中国</option>
+          <option value="选项的值">日本</option>
+          <option value="选项的值" selected>美国</option>
+          <option value="选项的值">香港</option>
+      </select>
+  </p>
+  <!-- 文本域
+  cols,rows
+  -->
+  <p>反馈
+      <textarea name="textarea"  cols="50" rows="10">文本内容，HTML5快速入门</textarea>
+
+  </p>
+  <!-- 文件域
+
+   -->
+   <p>
+       <input type="file"name="files">
+       <input type="button" value="上传"name="upload">
+   </p>
+```
+#### input邮箱滑块等操作：
+- <img src="./../Pic/image-20231105133853129.png" alt="image-20231105133853129" style="zoom:50%;" />
+```html
+   <!-- 邮件标签
+   email以是否有@符号确定
+   -->
+   <p>邮箱
+       <input type="email"name="email">
+   </p>
+    <p>URL
+        <input type="url"name="url">
+    </p> 
+    <!--数字验证
+    -->
+    <p>数字验证
+        <input type="number" name="number"max="100"min="0"step="10">
+    </p>
+    <!--滑块
+    -->
+    <p>滑块调节(音量)
+        <input type="range" name="Voice" min="0"max="100"step="1">
+    </p>
+    <!--搜索框
+    -->
+    <p>搜索框
+        <input type="search"name="search">
+    </p>
+```
+### 简单的表单验证：
+- 原因：表单验证是网页和网站设计中的一个关键环节，它对于确保用户提交的数据符合预期格式和值至关重要；并且能够减少服务器的负载：即你传过来的数据服务器不是都要，而是要做判断。
+- 相关操作举例：`placeholder`提示信息；`required`表示元素不能为空；`pattern`正则表达式（相关的正则表达式需要时去查阅即可）

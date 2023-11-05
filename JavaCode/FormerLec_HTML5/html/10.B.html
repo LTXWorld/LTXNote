@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>表单语法,登陆注册</title>
+</head>
+<body>
+
+<h1>注册</h1>
+
+<!-- 表单form
+action:提交位置，表单提交可以到网站或者请求处理地址
+method:提交方式，只有post get
+get可以在url中看到提交的名称和密码（但高效），post方式看不见
+post也可以传输大文件。
+-->
+<form action="1.MyFirstHTML.html" method="get">
+  <!-- 文本输入框，
+  value 默认初始值
+  maxlength 最长能写几个字符
+  size 文本框的长度
+  -->
+  <p>Name: <input type="text" name="username"  maxlength="10" size="30"placeholder="请输入用户名"required></p>
+  <!--密码框的type要注意-->
+  <p>
+      Password <input type="password" name="password"required>
+  </p>
+  <!-- 单选框标签
+  input type = radio
+  value :单选框的值
+  name:表示组，组一样时只能选一个
+  -->
+  <p>性别：
+      <input type="radio" value="boy"name="sex"disabled/>男
+      <input type="radio" value="girl"name="sex"/>女
+  </p>
+  <!-- 多选框
+
+  -->
+  <p>
+      <input type="checkbox"value="sleep"name="hobby">睡觉
+      <input type="checkbox"value="chat"name="hobby">聊天
+      <input type="checkbox"value="play"name="hobby">打搅
+  </p>
+  <!-- 按钮
+  button普通按钮
+  image图片按钮，点击后可以达到提交的效果
+  submit提交按钮
+  reset重置按钮
+  -->
+  <p>按钮
+      <input type="button" name="buton1"value="点击变长">
+      <input type="image"src="../Resource/image/iu.jpg.webp">
+  </p>
+  <p><input type="submit">
+     <input type="reset">
+  </p>
+
+
+  <!-- 下拉框，
+    selected默认出现的选项
+
+
+
+  列表框-->
+
+  <p>下拉框
+      <select name="列表名称" id="">
+          <option value="选项的值">中国</option>
+          <option value="选项的值">日本</option>
+          <option value="选项的值" selected>美国</option>
+          <option value="选项的值">香港</option>
+      </select>
+  </p>
+  <!-- 文本域
+  cols,rows
+  -->
+  <p>反馈
+      <textarea name="textarea"  cols="50" rows="10">文本内容，HTML5快速入门</textarea>
+
+  </p>
+  <!-- 文件域
+
+
+   -->
+   <p>
+       <input type="file"name="files">
+       <input type="button" value="上传"name="upload">
+   </p>
+
+   <!-- 邮件标签
+   email以是否有@符号确定
+   -->
+   <p>邮箱
+       <input type="email"name="email">
+   </p>
+    <p>URL
+        <input type="url"name="url">
+    </p> 
+    <!--数字验证
+    -->
+    <p>数字验证
+        <input type="number" name="number"max="100"min="0"step="10"required>
+    </p>
+    <!--滑块
+    -->
+    <p>滑块调节(音量)
+        <input type="range" name="Voice" min="0"max="100"step="1">
+    </p>
+    <!--搜索框
+    -->
+    <p>搜索框
+        <input type="search"name="search"id="mark">
+    </p>
+    <p>
+        <!-- 增强鼠标可用性-->
+        <lable for="mark">你点我试试</lable>
+        <input type="text">
+    </p>
+    <p>自定义邮箱
+        <input type="text"name="diymail" pattern="^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$">
+    </p>
+    <p>
+        <input type="submit">
+        <input type="reset"value="清空表单">
+    </p>
+</form>
+<!-- 文本输入框 -->
+
+</body>
+</html>
