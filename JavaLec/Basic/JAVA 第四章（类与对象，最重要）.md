@@ -104,6 +104,37 @@ class E(){
  }
 }
 ```
+
+#### 局部内部类：
+- 注意事项：当做一般的局部成员来看待；*与成员内部类区分开*
+	1. 放在==方法或代码块中的==，**不能有访问控制修饰符，且不能用static修饰**
+	2. 在外部类中不能创建内部类的实例
+	3. 创建其实例只能在包含它的方法中
+	4. 只能在方法体中访问局部内部类
+	5. 局部内部类可以访问定义它的方法中的局部变量，但是这些变量必须是 final 或者事实上的 final（即从定义开始到使用结束都没有改变过）。
+	6. 封装：局部内部类是一种很好的封装工具，可以将复杂的辅助类隐藏在一个方法内部
+
+```java
+public class OuterClass {
+
+    public void display() {
+        class LocalInnerClass {//局部内部类
+            public void print() {
+                System.out.println("Inside Local Inner Class");
+            }
+        }
+        
+        LocalInnerClass localInnerClass = new LocalInnerClass();
+        localInnerClass.print();
+    }
+    
+    public static void main(String[] args) {
+        OuterClass outer = new OuterClass();
+        outer.display();
+    }
+}
+
+```
 ### DOSE
 
 #### 成员方法
