@@ -2,12 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a82d0692-a608-46aa-b199-4b24145205ad" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/CSS/lesson01/css/style.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/CSS/lesson01/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/CSS/lesson02/css2.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/CSS/lesson02/index2.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../Pic/image-20231105231705591.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CSS/lesson3/1.LabaleC.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CSS/lesson3/2ClassC.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CSS/lesson3/HighLevel.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CSS/lesson3/IDC.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../JavaPractice/FromNiuKe/JavaTest_FromNiuke_November(1).md" beforeDir="false" afterPath="$PROJECT_DIR$/../../JavaPractice/FromNiuKe/JavaTest_FromNiuke_November(1).md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,8 +17,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="HTML File" />
         <option value="CSS File" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -77,7 +77,7 @@
       <option name="presentableId" value="Default" />
       <updated>1699084854897</updated>
       <workItem from="1699084856308" duration="11637000" />
-      <workItem from="1699149270369" duration="12222000" />
+      <workItem from="1699149270369" duration="17140000" />
     </task>
     <servers />
   </component>
