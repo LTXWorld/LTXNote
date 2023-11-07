@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>结构伪类选择器</title>
+<!--  伪类选择器，更好地定位某一位置-->
+  <style>
+
+    ul li:first-child{
+        /*ul的第一个子元素*/
+        background: #ff8be5;
+    }
+    ul li:last-child{
+      background: darkcyan;
+    }
+    p:nth-child(3){
+      /*选中当前p元素的父级元素body的第n个子元素，且该元素是p标签*/
+      background: aquamarine;
+    }
+    p:nth-of-type(1){
+      /*父元素里第n个类型为p的元素，不会被其他类型阻碍 */
+      background: yellow;
+    }
+  </style>
+</head>
+<body>
+  <h1>h1</h1>
+  <p>p1</p>
+  <p>p2</p>
+  <p>p3</p>
+  <ul>
+    <li>li1</li>
+    <li>li2</li>
+    <li>li3</li>
+  </ul>
+</body>
+</html>

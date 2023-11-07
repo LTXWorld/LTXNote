@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>属性选择器</title>
+  <style>
+    .demo a{
+      float: left;
+      display: block;
+      height: 50px;
+      width: 50px;
+      border-radius: 10px;
+      background: blue;
+      color: #ff8be5;
+      text-align: center;
+      margin-right: 10px;
+      font:bold 20px/50px Arial;
+      }
+    a[id]{
+      background: yellow;
+    }
+    a[id = first]{
+      background: green;
+    }
+    a[class *= links]{
+      /*通配等于号*/
+      background: #07e910;
+    }
+  /*  选中href中以http开头的元素*/
+    a[href ^= http]{
+      /*以xxx开头的等号*/
+      background:blueviolet ;
+    }
+    a[href $= pdf]{
+      /*以xxx结尾的等号*/
+      background: crimson;
+    }
+  </style>
+</head>
+<body>
+  <p class="demo">
+    <a href="https://www.baidu.com" class="links item first" id="first">1</a>
+    <a href="https://www.google.com"class="links item active" id="second" target="_blank">2</a>
+    <a href="" class="links item active">3</a>
+    <a href="images/123.png" class="links item">4</a>
+    <a href="images/123.png"class="links item">5</a>
+    <a href="abc.pdf">6</a>
+    <a href="">7</a>
+    <a href="">8</a>
+  </p>
+</body>
+</html>
