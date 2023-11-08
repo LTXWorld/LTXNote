@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a82d0692-a608-46aa-b199-4b24145205ad" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/CSS/5结构伪类选择器/Structure.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/CSS/lesson4属性选择器/4.属性选择器.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../FormerLec/CSS入门.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../FormerLec/CSS入门.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CSS/lesson3/HighLevel.html" beforeDir="false" afterPath="$PROJECT_DIR$/CSS/lesson3/HighLevel.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../LeetCode/代码随想录链表/206 翻转链表.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../LeetCode/代码随想录链表/206 翻转链表.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../LeetCode/代码随想录链表/707设计链表（十分重要）.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../LeetCode/代码随想录链表/707设计链表（十分重要）.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,7 +58,7 @@
       <updated>1699084854897</updated>
       <workItem from="1699084856308" duration="11637000" />
       <workItem from="1699149270369" duration="17745000" />
-      <workItem from="1699359537217" duration="6005000" />
+      <workItem from="1699359537217" duration="7196000" />
     </task>
     <servers />
   </component>
