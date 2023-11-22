@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document04</title>
+    <script>
+        /*
+            var personStr = ' {"属性名"：属性值,"属性名":{ }}  '
+        */
+        //这是一个json格式的字符串
+        var personStr = '{"name" : "LT","age" : 22,"dog" : {"dname":"小花"},"idols":["jay","David","JJ"]} '
+        console.log(personStr)
+        console.log(typeof personStr)
+        console.log(personStr.name)//目前字符串还不是对象，所以不能这样.
+        //转换为对象
+        var person = JSON.parse(personStr)
+        console.log(person)
+        console.log(person.name)
+        //再转回字符串
+        var personStr2 = JSON.stringify(person)
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
