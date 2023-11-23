@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function testFocus(){
+            console.log("获得焦点,光标在晃动")
+        }
+        function testBlur(){
+            console.log("失去焦点,光标不在晃动")
+        }
+        // 只有内容真的改变并失去焦点后内容改变才会执行
+        function testChange(){
+            console.log("表单内容发生改变")
+        }
+        function testChange2(){
+            console.log("表单选项发生改变")
+        }
+        function testSubmit(){
+            alert("表单发生了提交")
+            // 有机会在这里阻止表单提交
+            var flag = confirm("提交表单吗？")
+            if(!flag){
+                event.preventDefault()//组织组件的默认行为
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- 表单事件 -->
+    <form action="01js引入方式.html" method="get" onsubmit="testSubmit()">
+        用户名：<input type="text" name = "username" 
+        onfocus="testFocus()"
+        onblur="testBlur()"
+        onchange = "testChange()"
+        ><br>
+        登陆账号<input type="text" name="logoinName"><br>
+        选择籍贯
+            <select name="" id="" onchange="testChange2()" >
+                <option value="city1">北京</option>
+                <option value="city2">上海</option>
+                <option value="city3">广州</option>
+            </select>
+        <input type="submit" value="注册">
+        <input type="reset" value="清空">
+    </form>
+</body>
+</html>

@@ -6,6 +6,8 @@ import com.formerLec.JsonT.Dog;
 import com.formerLec.JsonT.Person;
 import org.junit.Test;
 
+import java.util.HashMap;
+
 /**
  * @author 陆涛
  * @version 1.0
@@ -27,5 +29,16 @@ public class TestJ1 {
         ObjectMapper objectMapper = new ObjectMapper();
         Person person = objectMapper.readValue(personStr, Person.class);
         System.out.println(person);
+    }
+
+    @Test
+    public void testJSON() throws JsonProcessingException {
+        HashMap data = new HashMap();
+        data.put("a","valuea");
+        data.put("b","valueb");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String s = objectMapper.writeValueAsString(data);
+        System.out.println(s);
     }
 }

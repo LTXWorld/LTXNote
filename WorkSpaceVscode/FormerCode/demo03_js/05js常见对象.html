@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document05</title>
+    <script>
+        var arr = new Array()
+        var arr1 = ["hhh",11,false]
+        var arr2 = new Array(10)
+        arr[0] = "zhangsan"
+        arr[5] = 10
+        arr[9] = true
+        console.log(arr)
+        console.log(arr.length)
+
+        var arrAll = arr.concat(arr1)
+        console.log(arrAll)
+        //移除并返回最后一个元素
+        var res = arrAll.pop()
+        //从尾端增加元素并返回长度
+        arrAll.push(false)
+        //查找对应的下标并返回
+        var index = arrAll.indexOf(10)
+        //翻转
+        arrAll.reverse()
+        console.log(arrAll)
+        //转换为字符串,并用某分隔符
+        console.log(arrAll.join("-"))
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
