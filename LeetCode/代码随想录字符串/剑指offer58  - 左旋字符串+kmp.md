@@ -69,28 +69,81 @@ class SolutionLeft{
 
 ## 题目要求：
 
+给你两个字符串 `haystack` 和 `needle` ，请你在 `haystack` 字符串中找出 `needle` 字符串的第一个匹配项的下标（下标从 0 开始）。如果 `needle` 不是 `haystack` 的一部分，则返回 `-1` 。
+
 ## 第一想法
 
 ## 困难
 
-## 正解
-
+## 正解(KMP)
+- 见手写示例：
 ## 代码实现
+- 见下方KMP算法实现
 
 # KMP算法
 
-## 前缀
-
+### 前缀
+- 在代码中使用i表示
 包含首字母，不包含尾字母的**所有子串**。
 
-## 后缀
-
+### 后缀
+- 在代码中使用j表示（或者len）
 包含尾字母，不包含首字母的所有子串。
 
-## 最长相等前后缀
+### 最长相等前后缀
+- 对所有的子串记录其最长相等前后缀，保存于next数组中；当发生失配时，**前一个字符的前缀表的数值**是多少就到这里去重新匹配。
 
-对所有的子串记录其最长相等前后缀，保存于next数组中；当发生失配时，**前一个字符的前缀表的数值**是多少就到这里去重新匹配。
+## 获得LPS前缀和数组
+- j指向前缀末尾位置，i指向后缀末尾位置。
+- j其实也代表了i之前包括i子串最长相等前后缀的长度
+- 关键步骤：
+```java
+public int[] buildLPS(String pattern){
+			//init
+			int[] lps = new int[pattern.length()];
+			lps[0] = 0;
+			int j = 0,i = 1;//这里的初始化很重要
+			
+			while(i < pattern.length()){
+					if(pattern.charAt(i) == pattern.charAt(j)){
+							j ++;
+							i ++;
+							lps[i] = j;//先对j进行递增再赋给前缀数组元素值
+					}else {
+						if(length != 0){
+							j = lps[j - 1];//?
+						}else{
+							lps[i] = 0;
+							i ++;
+						}
+					}
+			}
+			return lps;
+}
+```
+## 整体方法：
+- 遍历文本串与模式串，使用`buildLPS`方法来获得前缀和数组来标记匹配失效时的回退位置
 
-## 思路
-
-j指向前缀末尾位置，i指向后缀末尾位置。j其实也代表了i之前包括i子串最长相等前后缀的长度
+```java
+public int strStr(String s1,String s2){
+	if(s1.isEmpty()) return 0;
+	if(s2.isEmpty()) return 0;
+	
+	int[] lps = buildLPS(s2);
+	int i = 0,j = 0;
+	while(i < s1.length()){
+		if(s1.charAt(i) == s2.charAt(j)){
+			i ++;
+			j ++;
+			if(j == s2.length()){
+				return i - j;
+			}
+		}else if(j > 0){
+			j = lps[j - 1];
+		}else{
+			i ++;
+		}
+	}
+	return -1;
+}
+```
