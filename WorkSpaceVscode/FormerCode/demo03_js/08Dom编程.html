@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 如果单纯地将其放在body上面浏览器是从上往下扫的 -->
+    <script>
+
+        window.onload = function(){
+            //为div1绑定单机事件
+            var div1 = document.getElementById("d1")
+            div1.onclick = function(){
+                 div1.style.backgroundColor = "red"
+            }
+
+
+            //通过dom编程获得要操作的元素（对象）
+            var btn1 = document.getElementById("btn1")
+            //绑定一个事件（单机）
+            btn1.onclick = function(){
+                alert("按钮单击")
+                //通过dom编程触发div的单机事件
+                div1.onclick()
+            }
+        }
+
+    </script>
+    <style>
+        .div1{
+            width: 100px;
+            height: 100px;
+            background-color: aqua;
+        }
+    </style>
+</head>
+<!-- 页面加载完毕才回来调用ready方法 -->
+<body>
+    <div id="d1" class="div1">
+
+    </div>
+    <button id="btn1">按钮</button>
+
+    <hr>
+    <a href="09BOM常见api演示.html">09页</a>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        /*
+        window api
+            三种弹窗方式
+            history 属性及其api
+        */
+
+        function fun1(){
+            window.alert("hello")
+        }
+        function fun2(){
+            var res = window.prompt("请输入")
+            console.log(res)
+        }
+        function fun3(){
+            var res = window.confirm("确定要删除吗")
+            console.log(res)
+        }
+        /* 定时任务 */
+        function fun4(){
+            window.setTimeout(function(){
+                console.log("hello")
+            },2000)
+        }
+        // history演示
+        function funa(){
+            window.history.back()
+        }
+        function funb(){
+            window.history.forward()
+        }
+        // 修改地址栏的url
+        function func(){
+            window.location.href = "https://www.google.com"
+        }
+        //存储会话级数据、持久级数据
+        function funD(){
+            window.sessionStorage.setItem("keya","valueA")
+            window.localStorage.setItem("keyb","valueB")
+        }
+        function funE(){
+            console.log(sessionStorage.getItem("keya"))
+            console.log(localStorage.getItem("keyb"))
+        }
+        function funF(){
+            sessionStorage.removeItem("keya")
+            localStorage.removeItem("keyb")
+        }
+    </script>
+</head>
+<body>
+    <button onclick="funD()">存储数据</button>
+    <button onclick="funE()">读取数据</button>
+    <button onclick="funF()">清空数据</button>
+    <hr>
+    <button onclick="func()">谷歌</button>
+    <hr>
+    <button onclick="funa()">上一页</button>
+    <button onclick="funb()">下一页</button>
+    <a href="https://www.google.com">google</a>
+    <hr>
+    <button onclick="fun1()">提示框</button>
+    <button onclick="fun2()">输入框</button>
+    <button onclick="fun3()">确认框</button>
+    <button onclick="fun4()">两秒后向控制台打印hello</button>
+</body>
+</html>
