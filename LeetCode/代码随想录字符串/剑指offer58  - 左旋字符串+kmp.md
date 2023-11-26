@@ -96,7 +96,7 @@ class SolutionLeft{
 ## 获得LPS前缀和数组
 - j指向前缀末尾位置，i指向后缀末尾位置。
 - j其实也代表了i之前包括i子串最长相等前后缀的长度
-- 关键步骤：
+- 关键步骤：![image-20231126150115388](../../Pic/image-20231126150115388.png)
 ```java
 public int[] buildLPS(String pattern){
 			//init
@@ -107,12 +107,14 @@ public int[] buildLPS(String pattern){
 			while(i < pattern.length()){
 					if(pattern.charAt(i) == pattern.charAt(j)){
 							j ++;
-							i ++;
 							lps[i] = j;//先对j进行递增再赋给前缀数组元素值
+							i ++;
 					}else {
-						if(length != 0){
-							j = lps[j - 1];//?
+						if(j != 0){
+              //回退
+							j = lps[j - 1];//如果失配就让j回退到lps[j - 1]处再去比较
 						}else{
+              //当j已经提到了最开头退无可退了，对应值赋0，工作指针再往后走。
 							lps[i] = 0;
 							i ++;
 						}
@@ -133,11 +135,13 @@ public int strStr(String s1,String s2){
 	int i = 0,j = 0;
 	while(i < s1.length()){
 		if(s1.charAt(i) == s2.charAt(j)){
-			i ++;
+			i ++;//i代表着文本串的工作指针
 			j ++;
+      //因为j现在代表着模式串的工作指针，所以一旦j走到了工作指针的末尾一定就遍历完了模式串即成功了
 			if(j == s2.length()){
-				return i - j;
+				return i - j;//返回满足条件的最开始的位置，相对位置。
 			}
+      //这下面的回退操作与创建lps数组操作一致
 		}else if(j > 0){
 			j = lps[j - 1];
 		}else{
