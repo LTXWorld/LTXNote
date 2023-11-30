@@ -99,3 +99,93 @@
 
 - 注意，真正发生了提交的是整个表单，也就是在`form`那里
 - ps：弹窗的三种方式`alert()、prompt()、confirm()`信息提示框，输入框
+
+## BOM编程：
+
+### Window对象：
+
+## Window 对象
+
+- 所有浏览器都支持 window 对象。它表示浏览器窗口。
+
+- 所有 JavaScript 全局对象、函数以及变量均自动成为 window 对象的成员
+
+### 常见API
+
+- Screen、Location、History、Navigator、alert弹窗
+
+## DOM编程：
+
+### 概念：
+
+- 管理浏览器页面上的元素变化的编程
+- <img src="./../Pic/image-20231127201036177.png" alt="image-20231127201036177" style="zoom:50%;" />
+- 服务器端是不能由我们直接更改的，我们能更改的是**document对象**，从而改变浏览器展示的元素
+
+### Document对象结构（逻辑上）：
+
+- <img src="./../Pic/image-20231127201500114.png" alt="image-20231127201500114" style="zoom:50%;" />
+
+- DOM树上的结点类型分为三种：Element（标签）、Attribute（属性）、Text（文本）
+
+DOM编程三步走：
+
+- 获得DOM树（即Document对象）
+- 从Document对象中获取元素
+	- 直接获取
+	- 间接获取
+- 对元素进行操作
+	- 属性
+	- 样式
+	- 文本
+	- 增删
+
+### 相关的API
+
+#### 2获取相应元素
+
+- 直接获取元素：
+
+```sql
+var el1 = document.getElementById("username")
+var els = document.getElementsByTagName("input")
+var el2 = document.getElementsByName("aaa")
+```
+
+- 间接获取
+
+```sql
+			//先获取父元素，从父元素身上拿子元素
+            var div01 = document.getElementById("divFather")
+            //获取所有子元素、第一个、最后一个
+            var Childrens = div01.children
+            var fistchild = div01.firstElementChild
+            var lastchild = div01.lastElementChild
+            
+             //通过子元素获取父元素
+            var pinput = document.getElementById("password")
+            var pElement = pinput.parentElement
+            //获取兄弟元素
+            var pElement2 = pinput.previousElementSibling
+            var pElement3 = pinput.nextElementSibling
+```
+
+#### 3对元素进行操作
+
+- 操作属性：元素.属性名=" "
+- 操作样式：元素.style.样式名 = " "
+- 操作文本：使用innerText和innerHTML
+
+```sql
+            var email = document.getElementById("email")
+            //操作属性
+            email.value = "hi"
+            email.type = "button"
+            //操作样式
+            email.style.color = "blue"
+            email.style.borderRadius = "5px"//注意在css样式中是单横线，在JS中使用驼峰式
+            //操作文本，一个识别文本，一个识别html代码
+            email.innerText
+            email.innerHTML = "<h1>hello<h1>"
+```
+

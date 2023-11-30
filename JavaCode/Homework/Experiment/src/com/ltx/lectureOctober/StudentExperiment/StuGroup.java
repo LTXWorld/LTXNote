@@ -71,15 +71,28 @@ public class StuGroup implements MyGroup
 	{
 		if(x==1)
 		{
+//			for (int i = 1; i < length; i++) {
+//				Student currentStudent = stu[i];
+//				double currentMathScore = currentStudent.getMathScore();
+//				int j = i - 1;
+//
+//				while (j >= 0 && stu[j].getMathScore() > currentMathScore) {
+//					stu[j + 1] = stu[j];
+//					j--;
+//				}
+//				stu[j + 1] = currentStudent;
+//			}
+			//这里是一个插入排序,当前值与前面排好序的所有值去比较，会得到一个升序结果
 			for (int i = 1; i < length; i++) {
 				Student currentStudent = stu[i];
 				double currentMathScore = currentStudent.getMathScore();
 				int j = i - 1;
 
-				while (j >= 0 && stu[j].getMathScore() > currentMathScore) {
-					stu[j + 1] = stu[j];
-					j--;
+				while (j >= 0 && stu[j].getMathScore() > currentMathScore){
+					stu[j + 1] = stu[j];//往后挪位置
+					j --;
 				}
+				//一旦出循环意味着此时这里的值不大于当前值，所以将当前值放在此时位置的后面
 				stu[j + 1] = currentStudent;
 			}
 		}

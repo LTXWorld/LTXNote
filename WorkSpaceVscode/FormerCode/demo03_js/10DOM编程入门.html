@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function fun1(){
+            //根据id获得指定元素
+            var el1 = document.getElementById("username")
+        }
+        function fun2(){
+            // 根据标签名获取多个元素
+            var els = document.getElementsByTagName("input")
+        }
+        function fun3(){
+            //根据name属性值获取多个元素
+            var el2 = document.getElementsByName("aaa")
+        }
+        function fun4(){
+            //通过class属性获得多个元素
+            var el3 = document.getElementsByClassName
+        }
+        function fun5(){
+            //先获取父元素，从父元素身上拿子元素
+            var div01 = document.getElementById("divFather")
+            //获取所有子元素、第一个、最后一个
+            var Childrens = div01.children
+            var fistchild = div01.firstElementChild
+            var lastchild = div01.lastElementChild
+        }
+        function fun6(){
+            //通过子元素获取父元素
+            var pinput = document.getElementById("password")
+            var pElement = pinput.parentElement
+            //获取兄弟元素
+            var pElement2 = pinput.previousElementSibling
+            var pElement3 = pinput.nextElementSibling
+        }
+        function changeAttribute(){
+            var email = document.getElementById("email")
+            //操作属性
+            email.value = "hi"
+            email.type = "button"
+            //操作样式
+            email.style.color = "blue"
+            email.style.borderRadius = "5px"//注意在css样式中是单横线，在JS中使用驼峰式
+            //操作文本，一个识别文本，一个识别html代码
+            email.innerText
+            email.innerHTML = "<h1>hello<h1>"
+        }   
+    </script>
+    <style>
+        #email{
+            color: red;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="divFather" class="outerDiv">
+        <input type="text" class="a" id="username" name="aaa">
+        <input type="text" class="b" id="password" name="aaa">
+        <input type="text" value="hello" id="email" >
+        <input type="text" class="a" id="address" >
+    </div>
+    <input type="text"> <br>
+    <input type="button" value="根据id获取指定元素" id="btn1">
+    <input type="button" value="" id="btn2">
+    <input type="button" value="" id="btn3">
+    <input type="button" value="" id="btn4">
+    <input type="button" value="" id="btn5">
+</body>
+</html>
