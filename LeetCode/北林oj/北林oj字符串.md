@@ -52,7 +52,7 @@ abc def   no
 
 一开始我还想把字符串通过toCharArray转换为一个字符数组，后来发现charAt也可以。
 
-### 正解：
+### 正解一（使用数组当作哈希表）
 
 - 第一想法其实是对的，这个36大小的数组和减法操作是可以的。**0-9下标用来存0-9，只需要字符-'0'即可；然后10-36下标用来存大写字母，只需要用字符-'A' +10即可。**
 
@@ -109,8 +109,47 @@ public class Pin_ {
     }
 }
 
-```
 
+```
+### 正解二：（使用JAVA中的TreeMap）
+-  TreeMap 中的键会自动按照自然顺序（对于基本类型，如字符、整数等，是它们的值的顺序；对于自定义类型，则是依据 Comparable 接口或 Comparator）进行排序。在这个例子中，它按照字符的 ASCII 码值对字符进行排序。
+-  当你需要一个按照键自然排序的映射时，TreeMap 是一个很好的选择。例如，当你需要按字典顺序输出键时。
+-  **为什么可以同时处理字符和数字**：Java 中的 `char` 类型可以表示任何 Unicode 字符，包括英文字母和数字。当我们说“字符串和数字”时，其实指的是字符串中的字符，这些字符可以是字母或数字
+
+### 代码实现二：
+```java
+public class StringFrequency257Another {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        while (true){
+            String input = sc.nextLine();//接受一行的输入结果
+            //设置结束循环条件
+            if ("0".equals(input)){
+                break;
+            }
+            //得到输入结果的频度
+            Map<Character, Integer> frequencyMap = calculateFrequency(input);
+            //按照ASCII码排序并输出
+            for (Map.Entry<Character,Integer> entry : frequencyMap.entrySet()){
+                System.out.println(entry.getKey() + ":" + entry.getValue());
+            }
+        }
+        sc.close();
+    }
+    private static Map<Character,Integer> calculateFrequency(String input){
+        //使用TreeMap自动排序
+        Map<Character, Integer> frequencyMap = new TreeMap<>();
+        for (char ch : input.toCharArray()){
+            //判断字符是否是满足条件的字符
+            if ((ch >= 'A' && ch <= 'Z') || (ch >='0' && ch <= '9')){//这里把数字也当作字符进行判断了吗？
+                //将键值对放入频度Map中，如果没有出现过就是0
+                frequencyMap.put(ch,frequencyMap.getOrDefault(ch,0) + 1);
+            }
+        }
+        return frequencyMap;
+    }
+}
+```
 ## 258 递归实现字符串的逆序存储
 
 ### 题目要求：

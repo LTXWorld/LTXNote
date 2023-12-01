@@ -27,8 +27,8 @@ where salary >(
 
 ### 写子查询的技巧
 
-- 从里往外写：
-- 从外往里写：
+- 从里往外写：结构比较复杂的时候，很不确定就从里写。
+- 从外往里写：结构简单时直接从外面写。
 
 ## 分类
 
@@ -41,6 +41,19 @@ where salary >(
 - 里外的查询是否有相关性——上面的例子就不相关，每次都是与一个跟`salary`无关的常数去比，如果换成“工资大于**本部门**平均工资”，就具有相关性了。
 - 不相关子查询：独立运行，结果可以用在主查询中，但不依赖于主查询的任何行。
 - 相关子查询：每一行外部查询都可能会运行一次，**因为内部查询的结果依赖于外部查询当前行的数据**。
+
+```sql
+# 在子查询中使用到了外部的表e1
+select last_name,salary,department_id
+from employees e1
+where salary >(
+		select avg(salary)
+		from employees e2
+		where department_id = e1.`department_id`
+		 );
+```
+
+
 
 ### 单行实例：
 
@@ -168,3 +181,101 @@ HAVING AVG(salary) <= all(
 ### 应用注意：
 
 - 可以在循环控制`case when then else end`当中使用；还可以在`from`  ` Having`当中使用子查询
+
+### 相关子查询实例：
+
+- 在SELECT当中，除了GROUP BY和LIMIT之外，其他位置都可以声明子查询
+
+```sql
+#若员工表中的id与工作表中的id相同的数目不小于2
+#输出这些相同id的员工的id、name和其id
+SELECT employee_id,last_name,job_id
+FROM employees e1
+WHERE 2 <= (
+	    SELECT COUNT(*)
+	    FROM job_history j
+	    WHERE e1.employee_id = j.employee_id
+	    )
+```
+
+#### EXISTS和NOT EXISTS关键字
+
+- EXISTS会在子查询中找满足TRUE的条件，如果查到了FALSE就会继续找，直到找到了TRUE就不再往下找了
+- 这条为TRUE的记录会作为一个结果输出出去；
+
+```sql
+# 查询公司中管理者的信息
+SELECT employee_id,last_name,job_id,department_id
+FROM employees e1
+WHERE EXISTS(
+		SELECT *
+		FROM employees e2
+		WHERE e1.employee_id = e2.manager_id
+		);
+```
+
+## 典型题目：
+
+```sql
+#4查询和姓名中包含字母u的员工在相同部门的员工的id和姓名
+select e1.employee_id,e1.last_name
+from employees e1
+where department_id in (
+			select department_id
+			from employees e2
+			where last_name Like '%u%'
+			);# 注意包含字母u使用Like，条件改为in
+			
+#8查询平均工资最低的部门信息
+#先写内部，一步一步往外走
+select * 
+from departments
+where department_id=(
+			SELECT department_id
+			FROM employees
+			GROUP BY department_id
+			HAVING AVG(salary)=(
+						SELECT MIN(avg_sal)
+						FROM(
+							SELECT AVG(salary) avg_sal
+							FROM employees
+							GROUP BY department_id
+							)t_avg_sal
+						)
+)
+#方式二,多表连接查询(也是刚开始自己的思路）但是没有进行排序取值
+select d.*
+from departments d,(
+			SELECT department_id,AVG(salary) avg_sal
+			FROM employees
+			GROUP BY department_id
+			ORDER BY avg_sal ASC
+			LIMIT 0,1
+			)t_avg_sal
+where d.department_id = t_avg_sal.department_id
+
+
+#9查询平均工资最低的部门信息和该部门的平均工资
+#在select中使用子查询
+select d.*,(select avg(salary) from employees where department_id = d.department_id) avg_sal
+from departments d,(
+			SELECT department_id,AVG(salary) avg_sal
+			FROM employees
+			GROUP BY department_id
+			ORDER BY avg_sal ASC
+			LIMIT 0,1
+			)t_avg_sal
+where d.department_id = t_avg_sal.department_id;
+
+#10查询平均工资最高的job信息，第十题的思路与第八题几乎一致。
+SELECT j.job_id,j.job_title
+FROM jobs j,(
+	        SELECT job_id,AVG(salary) avg_sal
+		FROM employees
+		GROUP BY job_id
+		ORDER BY avg_sal DESC
+		LIMIT 0,1	
+		)t_avg_sal
+WHERE j.job_id = t_avg_sal.job_id;
+```
+
