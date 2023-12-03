@@ -2,7 +2,7 @@
 
 ## 1Structure：
 
-<img src="/Users/lutao/GitT/Pic/Raspberry_Structure.JPG" alt="Raspberry_Structure" style="zoom:33%;" />
+<img src="../../Pic/Raspberry_Structure.JPG" alt="Raspberry_Structure" style="zoom:33%;" />
 
 ​       	Power         Index1                Index2        CSICamera  Sound		KeyBoard&Mouse
 
@@ -10,11 +10,11 @@
 
 Use this App to Get the System into the SDcard
 
-<img src="/Users/lutao/GitT/Pic/image-20231201151521207.png" alt="image-20231201151521207" style="zoom:50%;" />
+<img src="../../Pic/image-20231201151521207.png" alt="image-20231201151521207" style="zoom:50%;" />
 
 ### Get The Power(But no SDcard)
 
-<img src="/Users/lutao/GitT/Pic/IMG_1966.jpeg" alt="IMG_1966" style="zoom: 33%;" />
+<img src="../../Pic/IMG_1966.jpeg" alt="IMG_1966" style="zoom: 33%;" />
 
 Two Lights :Green one & Red One
 
@@ -26,7 +26,7 @@ Two Lights :Green one & Red One
 
 When i Connect the Power,the HDMI Line,and the Keyboard & Mouse,it appear to me an amazing view:
 
-![IMG_1970](/Users/lutao/GitT/Pic/IMG_1970.jpeg)
+![IMG_1970](../../Pic/IMG_1970.jpeg)
 
 Just this Small piece show the Big world 
 

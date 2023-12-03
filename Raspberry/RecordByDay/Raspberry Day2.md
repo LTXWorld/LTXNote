@@ -16,7 +16,7 @@ Since then we can install any application whatever we want
 
 In raspberry Day1,I change the system to another one,this GUI has the 'camera' option,so I add an old camera on raspberry.
 
-<img src="/Users/lutao/GitT/Pic/IMG_1986.jpeg" alt="IMG_1986" style="zoom:33%;" />
+<img src="../../Pic/IMG_1986.jpeg" alt="IMG_1986" style="zoom:33%;" />
 
 ### Camera Applications
 
@@ -65,7 +65,7 @@ mplayer /home/pi/videos/out.mp4
 
 right,it was OK!
 
-<img src="/Users/lutao/GitT/Pic/IMG_1985.jpeg" alt="IMG_1985" style="zoom: 33%;" />
+<img src="../../Pic/IMG_1985.jpeg" alt="IMG_1985" style="zoom: 33%;" />
 
 ## 3 Use the VNC（Graphical interface)
 
@@ -79,7 +79,7 @@ hostname -I
 
 Then I make a new File in VNC Viewer,finally I get the control about my raspberry on my Macbook
 
-<img src="/Users/lutao/GitT/Pic/image-20231202155417356.png" alt="image-20231202155417356" style="zoom:50%;" />
+<img src="../../Pic/image-20231202155417356.png" alt="image-20231202155417356" style="zoom:50%;" />
 
 ## 4 Use the SSH(Command Interface)
 
