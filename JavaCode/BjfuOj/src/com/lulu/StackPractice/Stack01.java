@@ -1,4 +1,4 @@
-package com.lulu.test03Stack;
+package com.lulu.StackPractice;
 
 import java.util.Scanner;
 import java.util.Stack;

@@ -187,7 +187,7 @@ public class HuiWen {
 
 ```
 
-## 244 基于栈的后缀表达式求值
+## 244 基于栈的后缀表达式求值（无聊的输入样例）
 
 ### 题目要求：
 
@@ -200,15 +200,74 @@ public class HuiWen {
 
 ### 第一想法：
 
-与上面那道中缀不同的是，首先它的操作数之间用空格分开的，那就不用担心取到的不是一个完整的数字了；
+- 与上面那道中缀不同的是，首先它的操作数之间用空格分开的，那就不用担心取到的不是一个完整的数字了；
 
-原来做的力扣，是扫描输入的字符串，对于输入的字符串进行扫描，遇到操作数入栈，遇到操作符就进行判断，看具体怎么操作。操作完后结果再入栈，但是这个输入的格式很烦啊，我不能一直用nextInt去接收啊，还是要把它看作整个一行字符串。遇到空格就continue？
+- 原来做的力扣，是扫描输入的字符串，对于输入的字符串进行扫描，遇到操作数入栈，遇到操作符就进行判断，看具体怎么操作。操作完后结果再入栈，但是这个输入的格式很烦啊，我不能一直用nextInt去接收啊，还是要把它看作整个一行字符串。遇到空格就continue？（解决见下方代码）
 
-### 正解：
+### 正解一（输入样例恶心人）
 
-关键问题不在怎么计算，而在于这个输入太烦了。
+- 与力扣的题目不同的是，输入样例是用空格（或者运算符）分割的，而力扣是在一个数组中紧挨着的，所以想要使用力扣那样的操作就需要分割空格之后再操作
 
-### 代码实现
+- 但是还有2+8这种形式？？？所以我认为这道题很无聊，你要不然就把所有数字和操作符都用空格分开，要不然就全部都写在一起。
+
+```java
+public class BackAppend {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+//        String input = sc.nextLine();
+        while (true){
+            String input = sc.nextLine();
+            if (input.trim().equals("=")){
+                break;
+            }
+            System.out.println(BackCaculate(input));
+        }
+        sc.close();
+    }
+    public static double BackCaculate(String s){
+        if(s.length() == 0){
+            return 0;
+        }
+        //双端队列作为栈
+        Deque<Double> stack = new ArrayDeque<>();
+        //如果都已空格进行分割，\s表示空格等空，+表示多个，多一个\表示转义字符
+        String[] tokens = s.split("\\s+");
+        for (String token : tokens){
+            if ("=".equals(token)){
+                return stack.pop();
+            }else if ("+".equals(token)){
+                stack.push(stack.pop() + stack.pop());
+            }else if ("-".equals(token)){
+                stack.push(-stack.pop() + stack.pop());
+            }else if ("*".equals(token)){
+                stack.push(stack.pop() * stack.pop());
+            }else if ("/".equals(token)){
+                double n1 = stack.pop();
+                double n2 = stack.pop();
+                stack.push(n2 / n1);
+            }else {
+                stack.push(Double.valueOf(token));
+            }
+        }
+        //
+        return stack.peek();
+    }
+}
+```
+
+### 正解二：解决这个输入样例
+
+- 多写一个方法来解决这个怪异的输入样例（不是很能看明白）<img src="./../../Pic/image-20231203155129820.png" alt="image-20231203155129820" style="zoom:33%;" />
+- 但对于这个输入案例我能不能去解决掉中间的空格让他变为和力扣一样的输入呢？（去掉中间的空格其实某个题里弄过）尝试了一下也不行，因为现在字符数组里的结果如上图所示。
+
+```java
+    private static String[] splitExpression(String expression) {
+        Matcher m = Pattern.compile("\\d+|[-+*/=]").matcher(expression);
+        return m.results().map(MatchResult::group).toArray(String[]::new);
+    }
+```
+
+
 
 ## 245 基于栈的可操作判断
 
