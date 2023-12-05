@@ -1,4 +1,4 @@
-Raspberry Day2
+# Raspberry Day2
 
 ## 1 Change the Source
 
@@ -95,6 +95,8 @@ ssh pi@172.27.128.164
 
 Then enter your password about Raspberry to accomplish it.
 
+<img src="../../Pic/image-20231204194803286.png" alt="image-20231204194803286" style="zoom:50%;" />
+
 ### Make a script to excute the video
 
 We can write a script to start the ffmpeg app to record a video,just like this:
@@ -167,4 +169,34 @@ json php7.1-cgi libapache2-mod-php7.1 php7.1
 
 sudo apt-get install php-mcrypt php-imagick
 ```
+
+### Owncloud
+
+Install the owncloud,first of all I download the owncloud by this command line
+
+```bash
+wget https://download.owncloud.org/community/owncloud-10.2.1.tar.bz2
+```
+
+But maybe caused by the net error,it didn't work,just a HTML file not a bzip file,so I can't get this owncloud.
+
+This event puzzle me a lot,so I ask it for ChatGpt,it offers me another way to solve this trouble:Using the FileZilla app to transport the bzip file.(Please remeber the connection pot 22)
+
+<img src="../../Pic/image-20231204193907281.png" alt="image-20231204193907281" style="zoom:50%;" />
+
+#### FileZilla:
+
+So what is the FileZilla?It is my first time to hear about that.
+
+FileZilla is a free and open-source software application that serves as an FTP (File Transfer Protocol) client.(So this interface like our ftp server in our daily homework day)
+
+#### Finish the owncloud
+
+Change the apache2's config,make the 'AllowOverride' from None to All
+
+```bash
+sudo nano /etc/apache2/apache2.conf
+```
+
+Then make a database to save the data in owncloud,restart the Apache2 to test it.
 

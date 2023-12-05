@@ -1,6 +1,6 @@
 # Raspberry01
 
-## 1Structure：
+## 1 Structure：
 
 <img src="../../Pic/Raspberry_Structure.JPG" alt="Raspberry_Structure" style="zoom:33%;" />
 
@@ -32,30 +32,28 @@ Just this Small piece show the Big world
 
 
 
-## 2Use the GPIO 
+## 2 Use the GPIO 
 
 ### WiringPi
 
 First of all,I just simulate the book to use the WiringPi to control the GPIO(General Purpose IO),but unfortunately,it dosen't work
 
-```vim
+```bash
 sudo gpio readall
 bash:gpio:command not found
 ```
 
 So,I search for Google,it shows the WiringPi maybe dosen't exist in Raspberry Pi OS.Then i make another library to accomplish it.
 
-```vim
+```bash
 sudo apt-get update
 sudo apt-get install python3-rpi.gpio
 ```
 
+But it needs some extra equipments,so it is not applied yet.
 
-
-## 3 Try the RTMP
-
-RTMP(Real Time Messaging Protocol),
-
-## 4Reload the System
+## 3 Reload the System
 
 Caused by the offical sysytem can't find the Camera option in GUI,so I change it to the system which is given by the saler.
+
+<img src="../../Pic/image-20231204193215194.png" alt="image-20231204193215194" style="zoom:50%;" />
