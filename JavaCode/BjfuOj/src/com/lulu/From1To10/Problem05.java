@@ -7,7 +7,7 @@ import java.util.Scanner;
  * @version 1.0
  * 多组a+b
  */
-public class Problem5 {
+public class Problem05 {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         int a,b;
