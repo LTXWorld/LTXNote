@@ -21,3 +21,55 @@ def str2int(s):
     def char2num(s):
         return DIGITS[s]
     return reduce(fn,map(char2num,s))
+
+def _odd_iter():
+    n = 1
+    while True:
+        n = n + 2
+        yield n
+
+def _not_divisible(n):
+    return lambda x: x % n > 0
+
+def primes():
+    yield 2
+    it = _odd_iter()
+    while True:
+        n = next(it)
+        yield n
+        it = filter(_not_divisible(n), it)
+
+for n in primes():
+    if n < 1000:
+        print(n)
+    else:
+        break
+
+print(sorted(['bob','about','Zoo','Credit'],key=str.lower,reverse=True))
+
+def lazy_sum(*args):
+    def sum():
+        ax = 0
+        for n in args:
+            ax = ax + n
+        return ax
+    return sum
+
+def count():
+    fs = []
+    for i in range(1, 4):
+        def f():
+            return i * i
+        fs.append(f)
+    return fs
+f1,f2,f3 = count()
+
+def inc():
+    x = 0
+    def fn():
+        nonlocal x#可以对外层局部变量赋值
+        x = x + 1
+        return x
+    return fn
+f = inc()
+print(f())
