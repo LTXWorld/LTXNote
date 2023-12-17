@@ -1,3 +1,8 @@
-import functools
-int2 = functools.partial(int,base=2)
-print(int2('10000000'))
+class Map(object):
+    def __init__(self,name):
+        self.name = name
+
+    def __call__(self):
+        print('My name is %s' % self.name)
+m = Map('Michael')
+m()
