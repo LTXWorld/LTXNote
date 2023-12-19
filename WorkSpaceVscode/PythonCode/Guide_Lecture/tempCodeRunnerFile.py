@@ -1,8 +1,3 @@
-import logging 
-logging.basicConfig(level=logging.INFO)
-# import pdb
-s = '0'
-n = int(s)
-# pdb.set_trace()
-print(10 / n)
-logging.info('n = %d' % n)
+import json
+d1 = dict(name='Bob', age=20, score=88)
+json.dumps(d1)

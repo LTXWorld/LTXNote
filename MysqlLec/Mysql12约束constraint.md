@@ -116,9 +116,74 @@ constraint pk_test4_id primary key(id)
 
 - 声明在某个字段上，使这个字段会自动增长（**必须是整型变量**），一般都会声明在主键、唯一键上（**只能有一个自增长列**）
 - 开发中添加数据时不用管自增列了。
+- 默认从1开始，**但是一开始你插入的是n，以后都是从n开始**
 
 ### Mysql8.0中新特性：
 
 在新版本中，自增的数值是**持久化**的，并**没有放在内存中保存**（即如果重启mysql服务器，自增出的数还是以前的顺序）
 
 旧版本在内存中保存，所以关闭服务即丢失掉上一次的记录；新开时会看当前到n，再从n+1开始。
+
+## 外键约束：
+
+从表中的外键约束伴随着主表中的主键约束：（**引用完整性**）
+
+<img src="./../Pic/image-20231218102604397.png" alt="image-20231218102604397" style="zoom:50%;" />
+
+- 与主表中名称可以不一样，但是**类型必须相同**。
+- 主从不能跨存储引擎使用。
+
+举例：
+
+```mysql
+CREATE TABLE emp1(
+emp_id  INT PRIMARY KEY AUTO_INCREMENT,
+emp_name VARCHAR(15),
+department_id INT,
+#表级约束定义外键,这里的语法
+CONSTRAINT fk_emp1_dept_id FOREIGN KEY (department_id)
+REFERENCES dept1(dept_id)
+)
+
+#删除外键约束
+alter table emp1
+drop foreign key fk_emp1_dept_id;
+#删除外键约束对应的索引
+show index from emp1;
+alter table emp1
+drop index fk_emp1_dept_id;
+```
+
+### 约束等级：
+
+<img src="./../Pic/image-20231218104418926.png" alt="image-20231218104418926" style="zoom:67%;" />
+
+- 默认的是No action和Restrct
+- 修改时使用Cascade、删除时使用RESTRICT方式——同步修改，严格限制删除。
+
+```mysql
+.....
+constraint fk_emp1_dept_id foreign key (department_id)
+references dept1(dept_id) on UPDATE CASCADE on DELETE RESTRICT
+```
+
+### 什么时候使用外键
+
+- 数据库层面不要使用，**应用层解决**这些规范限制（Java中）
+- 因为十分影响速度和成本。
+
+## CHECK约束
+
+检查某个字段值是否在某个范围之内。（5.7不支持，8.0支持）
+
+```mysql
+create table test10(
+id int,
+last_name varchar(15),
+salary decimal(10,2) check(salary > 2000)
+);
+```
+
+## Default约束
+
+默认值；避免出现NULL值
