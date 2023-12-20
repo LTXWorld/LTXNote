@@ -127,3 +127,33 @@ begin
 end $
 ```
 
+## 存储过程或函数的查询及修改
+
+### 查询
+
+可以有多种查询方式，第三种较为详细注意大写类型。
+
+```mysql
+SHOW CREATE PROCEDURE show_mgr_name;
+SHOW CREATE FUNCTION email_by_id;
+
+SHOW PROCEDURE STATUS LIKE 'show_max_salary';
+
+SELECT * FROM information_schema.Routines 
+WHERE ROUTINE_NAME = 'email_by_id' AND ROutine_Type ='FUNCTION';
+```
+
+### 修改
+
+修改并没有更改其功能，只改相关特性（改功能就得重造）
+
+```mysql
+#更改特性
+alter procedure show_max_salary
+sql security invoker
+comment '查询最高工资';   
+#删除
+Drop Procedure if exists show_min_salary;
+```
+
+阿里禁止使用存储过程；调试困难；管理复杂
