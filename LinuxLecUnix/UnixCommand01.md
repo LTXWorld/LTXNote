@@ -6,7 +6,8 @@ When you enter cd , it is the way to get any directory.In this note,I want to re
   - The most important thing is the path,you must know where you are at any time.Only by this you can make a right way to look through your directory
   - Use `pwd` command to know the current path. Or you can use the `cd -` command to get the last path and enter it again to get the next path:You can switch from these two paths
   - <img src="../Pic/image-20231219161153060.png" alt="image-20231219161153060" style="zoom:50%;" />
-
+  - Ps.A cool command combination:`cd !$`:It will cd the directory which you just write in the last command.(Amazing right?)![image-20231220164214908](../Pic/image-20231220164214908.png)
+  
 2. ** Use the parameter with cd**
   - Firstly,path is also significant in this part.I can use the relative path or the abslute path to enter any directory I want.
   - Just like the photo I pick:<img src="../Pic/image-20231219162825055.png" alt="image-20231219162825055" style="zoom:50%;" />

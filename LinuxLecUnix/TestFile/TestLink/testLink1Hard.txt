@@ -1,0 +1,4 @@
+Try
+Hello world!
+LTX!
+this is the linktest1.txt file to test my link study
