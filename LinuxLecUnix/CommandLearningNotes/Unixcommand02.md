@@ -34,7 +34,9 @@ We can use this command to delete any files or directory.But it can't cancel,so 
 
 <img src="../Pic/image-20231220164914780.png" alt="image-20231220164914780" style="zoom:50%;" />
 
-If you want to delete a directory,there are two situations about it:For empty directory,we can directly use this command to do it `rm directoryname`;But in most time,there always something in your directory,so we must add the parameter`rm -r directoryname`,it means it will recursively delete all files and subdirectories within the specified directory without confirmation by default.**(So,must be cautious!!!)**
+If you want to delete a directory,there are two situations about it:For empty directory,we can directly use this command to do it `rm directoryname` or `rmdir xxx`;Please remeber,`rmdir` is the command to remove or delete an **empty directory**.
+
+But in most time,there always something in your directory,so we must add the parameter`rm -r directoryname`,it means it will recursively delete all files and subdirectories within the specified directory without confirmation by default.**(So,must be cautious!!!)**
 
 ## File
 
