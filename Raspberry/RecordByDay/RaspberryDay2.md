@@ -71,7 +71,7 @@ right,it was OK!
 
 So,all the measures are with the HDMI line,I want use my PC to control the raspberry.The VNC is the suitable APP to do that.
 
-First,I install the VNC Viewer on my Macbook;Second I get the raspberry IP address：**172.27.128.164**
+First,I install the VNC Viewer on my Macbook;Second I get the raspberry IP address：**172.27.128.164**（Problem occured,please read the Problem Solving)
 
 ```bash
 hostname -I
