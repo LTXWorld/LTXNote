@@ -7,7 +7,7 @@ When you enter cd , it is the way to get any directory.In this note,I want to re
   - Use `pwd` command to know the current path. Or you can use the `cd -` command to get the last path and enter it again to get the next path:You can switch from these two paths
   - <img src="../../Pic/image-20231219161153060.png" alt="image-20231219161153060" style="zoom:50%;" />
   - Ps.A cool command combination:`cd !$`:It will cd the directory which you just write in the last command.(Amazing right?)![image-20231220164214908](../../Pic/image-20231220164214908.png)
-  
+
 2. **Use the parameter with cd**
   - Firstly,path is also significant in this part.I can use the relative path or the abslute path to enter any directory I want.
   - Just like the photo I pick:<img src="../../Pic/image-20231219162825055.png" alt="image-20231219162825055" style="zoom:50%;" />
@@ -18,9 +18,24 @@ When you enter cd , it is the way to get any directory.In this note,I want to re
 This command can show the details of the file in current directory.And it also has the rich and vast parameters to use.
 
 1. The most useage command:
-  - <img src="../../Pic/image-20231219164033254.png" alt="image-20231219164033254" style="zoom:50%;" />`ls -l`it shows the detail about the files,such as read-write permissions,links,user name,the size ...
+  - <img src="../../Pic/image-20231219164033254.png" alt="image-20231219164033254" style="zoom:50%;" />`ls -l`it shows the detail about the files,such as *read-write permissions,links,user name,the size*...
   - <img src="../../Pic/image-20231219164228304.png" alt="image-20231219164228304" style="zoom:50%;" />`ls -a`it means show all files in this directory,including the hidden file(these . file in this photo)
-  - You can also combine two or more parameters to show more informations about the specific file<img src="../../Pic/image-20231219164922449.png" alt="image-20231219164922449" style="zoom:50%;" /> For example,the `-F` will add the specific mark after the files,such as `/`after the directory name;and the `-R` will show all the files of all directory in ths path.(with a looping way)
+  - You can also **combine** two or more parameters to show more informations about the specific file<img src="../../Pic/image-20231219164922449.png" alt="image-20231219164922449" style="zoom:50%;" /> For For example,the `-F` will add the specific mark after the files,such as `/`after the directory name;and the `-R` will show all the files of all directory in ths path.(with a looping way)
+
+## Permissions OF Files
+
+<img src="./../../Pic/image-20231225173220166.png" alt="image-20231225173220166" style="zoom:50%;" />
+
+	-  <img src="./../../Pic/image-20231225172449873.png" alt="image-20231225172449873" style="zoom:50%;" />
+	-  In the next words,three in a group,such as **read write execute**(rwx);If you don't have some permission,it will display '-' to replace the word.
+	-  *First three,shows the owner of Group;Second three,shows the members of Group,Third three,shows the others Group Permission!*
+	-  In this line,<img src="./../../Pic/image-20231225173658344.png" alt="image-20231225173658344" style="zoom:50%;" />,ltx is the *ownername*,ltx is the groupname,
+
+### chmod:
+
+- <img src="./../../Pic/image-20231225174334404.png" alt="image-20231225174334404" style="zoom:50%;" />
+- **Change Permission**:With members,we can use the command `chomod abc filename`:<img src="./../../Pic/image-20231225174736065.png" alt="image-20231225174736065" style="zoom:50%;" />
+- Please note that **`chmod -x file`**means **delete** the execute permission about the file;`chomd +x file`means add the permission.
 
 
 ## MKDIR
