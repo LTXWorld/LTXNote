@@ -118,7 +118,7 @@
 
 ### 概念：
 
-- 管理浏览器页面上的元素变化的编程
+- 管理**浏览器页面上的元素变化**的编程
 - <img src="./../Pic/image-20231127201036177.png" alt="image-20231127201036177" style="zoom:50%;" />
 - 服务器端是不能由我们直接更改的，我们能更改的是**document对象**，从而改变浏览器展示的元素
 
@@ -188,4 +188,6 @@ var el2 = document.getElementsByName("aaa")
             email.innerText
             email.innerHTML = "<h1>hello<h1>"
 ```
+
+## 案例开发：
 

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+根标签只有一个
+-->
+<jdbc>
+    <dev>
+        <username>root</username>
+        <password>root</password>
+        <dirver>com.mysql.cj.jdbc.Driver</dirver>
+        <url>jdbc:mysql://localhost:3306/atguigu</url>
+    </dev>
+    <test>
+        <username>xxx</username>
+        <password>14</password>
+        <dirver>com.mysql.cj.jdbc.Driver</dirver>
+        <url>jdbc:mysql://localhost:3306/atguigu</url>
+    </test>
+    <former>
+        <username>lisi</username>
+        <password>353252</password>
+        <dirver>com.mysql.cj.jdbc.Driver</dirver>
+        <url>jdbc:mysql://localhost:3306/atguigu</url>
+    </former>
+</jdbc>
