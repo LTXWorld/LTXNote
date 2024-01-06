@@ -104,7 +104,7 @@ java代码解析XML文件：导入dom4j.jar包，调用其中的API。具体步�
 
 **在IDEA中：**
 
-
+见下方
 
 ## 目录解释：
 
@@ -121,5 +121,60 @@ java代码解析XML文件：导入dom4j.jar包，调用其中的API。具体步�
 
 ### webapp的标准结构：
 
+<img src="../Pic/image-20240106103015585.png" alt="image-20240106103015585" style="zoom:50%;" />
 
+- WEB-INF是受保护的资源，不能被浏览器直接访问
+- 其内部结构：保存Java代码的字节码、jar包依赖、当前项目的配置文件![image-20240106102245680](../Pic/image-20240106102245680.png)
 
+其他自带的项目：
+
+<img src="../Pic/image-20240106110546961.png" alt="image-20240106110546961" style="zoom:50%;" />
+
+- ROOT、manager、host-manager三个项目特殊，管理Tomcat本身。
+
+## 部署项目
+
+### 1编译好的项目直接放入webapps
+
+### 2项目在其他路径下
+当然路径可以随机选择，但是需要额外配置文件：<img src="../Pic/image-20240106103448468.png" alt="image-20240106103448468" style="zoom:50%;" />
+
+- `<Context path="/App" docBase="/Users/lutao/GitT/WorkSpaceVscode/FormerCode/WebProjects/App"/>`注意结束符/
+
+- 注意，第一个path是上下文路径，即在浏览器访问时的路径；第二个是项目的真实路径。
+
+## 重要映射图
+
+![image-20240106110044978](../Pic/image-20240106110044978.png)
+
+## 使用IDEA构建项目
+
+<img src="../Pic/image-20240106130252338.png" alt="image-20240106130252338" style="zoom:50%;" />
+
+实际步骤：
+
+<img src="../Pic/image-20240106130358238.png" alt="image-20240106130358238" style="zoom:50%;" />
+
+### 操作：
+
+1. 将Java项目改为Javaweb项目，在模块（项目）中添加web组件。增加Tomcat作为开发的依赖。
+- 先从项目结构中导入Tomcat依赖
+- 再从Add framework support中添加web applications
+- <img src="../Pic/image-20240106131910776.png" alt="image-20240106131910776" style="zoom:50%;" />前端代码在web中，java代码后端在src
+- <img src="../Pic/image-20240106133530746.png" alt="image-20240106133530746" style="zoom:50%;" />resources+src中的文件会一起编译到WEB-INF的classes目录里，成为java的字节码文件。注意，lib目录必须在WEB-INF中。
+
+2. 将Javaweb工程构建为App
+
+- 其实写完代码直接运行可以默认构建出out包
+- <img src="../Pic/image-20240106134227322.png" alt="image-20240106134227322" style="zoom:50%;" />
+
+- 这里就是可以发布的APP，web工程目录变为demo01_web01_war<img src="../Pic/image-20240106134414026.png" alt="image-20240106134414026" style="zoom:50%;" />
+
+3. 将APP部署到Tomcat上
+
+- 调整项目配置<img src="../Pic/image-20240106134746251.png" alt="image-20240106134746251" style="zoom:50%;" />
+- 将刚才构建的APP加入到Tomcat中<img src="../Pic/image-20240106134942816.png" alt="image-20240106134942816" style="zoom:50%;" />
+
+### 实现原理：
+
+IDEA复制Tomcat副本防止污染源Tomcat，**副本存放的是与当前部署项目相关的配置文件**。(故副本的大小较小)
