@@ -1,6 +1,6 @@
 # Servlet
 
-## 动静态资源：
+## 1 动静态资源：
 
 无需程序运行时需要代码运行才能生成的资源，**在程序运行之前就写好的**如html css js img；反之则为动态资源，**程序运行前无法确定的**，如Servlet
 
@@ -8,7 +8,7 @@
 - **Servlet技术标准可以作为Java代码接受用户的请求。**
 - 必须在Web项目中开发在Tomcat容器中进行。
 
-## Servlet运行流程：
+## 2 Servlet运行流程：
 
 - Tomcat接收到请求报文时，将其转换为**HttpServeletRequest对象**，包含请求的所有信息。
 - 同时创建Response对象，未来会转换成响应报文。
@@ -17,7 +17,7 @@
 
 Servlet作用主要是承前启后，<img src="../Pic/image-20240106233529348.png" alt="image-20240106233529348" style="zoom:50%;" />
 
-## Servlet开发流程
+## 3 Servlet开发流程
 
 ### 创建Javaweb项目，将Tomcat添加为项目依赖
 
@@ -81,7 +81,7 @@ protected void service(HttpServletRequest request, HttpServletResponse response)
 
 在java工程的类之前`@WebServlet("/s1")`，**配置上下文路径**即可。
 
-## 额外问题
+## 4 额外问题
 
 ### Jar
 
@@ -108,14 +108,14 @@ protected void service(HttpServletRequest request, HttpServletResponse response)
 
 *在哪里哪里就是模糊的。
 
-## 生命周期：
+## 5 生命周期：
 
 作为开发者只需要在service方法中进行编写java代码，其对象的创建和销毁都由Tomcat完成。
 
 ### 四个过程：
 
 - 实例化（构造器）1
-- 初始化 init 1
+- 初始化 init必须调用无参的 1
 - 接受处理请求 service 多次
 - 销毁对象 destory 1
 
@@ -124,3 +124,53 @@ protected void service(HttpServletRequest request, HttpServletResponse response)
 实例化顺序，在注解方式的参数配置`loadOnStartup = xx`
 
 **静态资源由defaultServlet进行加载。**
+
+## 6 Servlet接口继承结构：
+
+顶级的Servlet接口—GenericServlet—HttpServlet
+
+顶级：
+
+```java
+public interface Servlet {
+    void init(ServletConfig var1) throws ServletException;
+
+    ServletConfig getServletConfig();
+
+    void service(ServletRequest var1, ServletResponse var2) throws ServletException, IOException;
+
+    String getServletInfo();
+
+    void destroy();
+}
+```
+
+Generic：侧重除了service方法以外的其他基础方法的处理
+
+Http：
+
+`public abstract class HttpServlet extends GenericServlet`侧重Service方法的处理
+
+```java
+    public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
+        HttpServletRequest request;
+        HttpServletResponse response;
+        try {
+            request = (HttpServletRequest)req;
+            response = (HttpServletResponse)res;//参数的父转子的处理
+        } catch (ClassCastException var6) {
+            throw new ServletException(lStrings.getString("http.non_http"));
+        }
+			//调用重载的service方法，会调用doGet和doPost方法
+        this.service(request, response);
+    }
+```
+
+- 如果在自己的Java代码中不重写service方法，就会走Httpservlet自带的service方法，转而去调用doGet\doPost方法。
+- 后续使用了SpringMVC框架后，无需继承HttpServlet，处理请求的方法也会变化。
+
+## 7 ServletConfig对象
+
+每个Servlet对象都会实例化一个唯一的ServletConfig，作为其属性存在。
+
+注解中使用urlPatterns,和initParams

@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/demo01-web01/demo01-web01.iml" filepath="$PROJECT_DIR$/demo01-web01/demo01-web01.iml" />
       <module fileurl="file://$PROJECT_DIR$/demo02-servlet01/demo02-servlet01.iml" filepath="$PROJECT_DIR$/demo02-servlet01/demo02-servlet01.iml" />
+      <module fileurl="file://$PROJECT_DIR$/demo03-servletconfig-servletContext/demo03-servletconfig-servletContext.iml" filepath="$PROJECT_DIR$/demo03-servletconfig-servletContext/demo03-servletconfig-servletContext.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/web-all.iml" filepath="$PROJECT_DIR$/.idea/web-all.iml" />
     </modules>
   </component>
