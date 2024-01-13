@@ -67,6 +67,109 @@ right,it was OK!
 
 <img src="../../Pic/IMG_1985.jpeg" alt="IMG_1985" style="zoom: 33%;" />
 
+### Make a script to execute the video
+
+We can write a script to start the ffmpeg app to record a video,just like this:
+
+```bash
+nano capture_video.sh #initialize and edit the script
+
+#This script:
+#!/bin/bash
+
+# 获取当前日期和时间，格式为 YYYYMMDD-HHMMSS
+current_time=$(date +"%Y%m%d-%H%M%S")
+
+# 设置视频文件的保存路径和文件名
+file_path="/home/pi/videos/"
+file_name="video_$current_time.mp4"
+
+# 使用 ffmpeg 进行录制，假设录制时长为10秒
+ffmpeg -f v4l2 -i /dev/video0 -t 00:00:10 "${file_path}${file_name}"
+
+# 打印保存的视频文件路径
+echo "Video saved to ${file_path}${file_name}"
+
+#end scri
+chmod +x capture_video.sh #Give the authority to use this script
+
+./capture_video.sh # excute the script
+```
+
+When we execute the script,we get the videos as the script writing.
+
+Finally,I make three videos :<img src="../../Pic/image-20231202201429945.png" alt="image-20231202201429945" style="zoom:50%;" />
+
+### Get the videos
+
+These three videos are in Raspberry's SDcard,if you want to handle them in your PC,you need to copy them to your own room.
+
+Notes:Don't use this command on ssh's command view,you'd better make a new command line to write it.
+
+### Photo script
+
+#### Capture the single frame
+
+```bash
+#!/bin/bash
+
+# 获取当前日期和时间，格式为 YYYYMMDD-HHMMSS
+current_time=$(date +"%Y%m%d-%H%M%S")
+
+# 设置图像文件的保存路径和文件名
+file_path="/home/pi/images/"
+file_name="image_$current_time.jpg"
+
+# 使用 ffmpeg 捕获单帧图像
+ffmpeg -f v4l2 -i /dev/video0 -frames 1 "${file_path}${file_name}"
+
+# 打印保存的图像文件路径
+echo "Image saved to ${file_path}${file_name}"
+
+```
+
+#### Interval 2 second
+
+Capture five photos.
+
+```bash
+#!/bin/bash
+
+# 获取当前日期和时间，格式为 YYYYMMDD-HHMMSS
+current_time=$(date +"%Y%m%d-%H%M%S")
+
+# 设置图像文件的保存路径
+image_path="/home/pi/images/"
+
+# 确保保存图像的文件夹存在
+mkdir -p "${image_path}"
+
+# 拍摄图像的数量
+num_images=5
+
+for (( i=0; i<num_images; i++ ))
+do
+    # 为每张图像生成一个时间戳
+    timestamp=$(date +"%Y%m%d-%H%M%S")
+
+    # 图像文件名
+    file_name="image_${timestamp}.jpg"
+
+    # 使用 ffmpeg 捕获图像
+    ffmpeg -f v4l2 -i /dev/video0 -vframes 1 "${image_path}${file_name}"
+
+    # 打印保存的图像文件路径
+    echo "Image saved to ${image_path}${file_name}"
+
+    # 等待2秒
+    sleep 2
+done
+
+```
+
+
+
+
 ## 3 Use the VNC（Graphical interface)
 
 So,all the measures are with the HDMI line,I want use my PC to control the raspberry.The VNC is the suitable APP to do that.
@@ -97,45 +200,7 @@ Then enter your password about Raspberry to accomplish it.
 
 <img src="../../Pic/image-20231204194803286.png" alt="image-20231204194803286" style="zoom:50%;" />
 
-### Make a script to excute the video
 
-We can write a script to start the ffmpeg app to record a video,just like this:
-
-```bash
-nano capture_video.sh #initialize and edit the script
-
-#This script:
-#!/bin/bash
-
-# 获取当前日期和时间，格式为 YYYYMMDD-HHMMSS
-current_time=$(date +"%Y%m%d-%H%M%S")
-
-# 设置视频文件的保存路径和文件名
-file_path="/home/pi/videos/"
-file_name="video_$current_time.mp4"
-
-# 使用 ffmpeg 进行录制，假设录制时长为10秒
-ffmpeg -f v4l2 -i /dev/video0 -t 00:00:10 "${file_path}${file_name}"
-
-# 打印保存的视频文件路径
-echo "Video saved to ${file_path}${file_name}"
-
-#end script
-
-chmod +x capture_video.sh #Give the authority to use this script
-
-./capture_video.sh # excute the script
-```
-
-When we excute the script,we get the videos as the script writing.
-
-Finally,I make three videos :<img src="../../Pic/image-20231202201429945.png" alt="image-20231202201429945" style="zoom:50%;" />
-
-### Get the videos
-
-These three videos are in Raspberry's SDcard,if you want to handle them in your PC,you need to copy them to your own room.
-
-Notes:Don't use this command on ssh's command view,you'd better make a new command line to write it.
 
 ```bash
 scp pi@172.27.128.164:/home/pi/videos/video_20231202-193214.mp4 /Users/lutao/RaspberryVideos/

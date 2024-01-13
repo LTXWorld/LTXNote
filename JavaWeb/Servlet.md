@@ -174,3 +174,75 @@ Http：
 每个Servlet对象都会实例化一个唯一的ServletConfig，作为其属性存在。
 
 注解中使用urlPatterns,和initParams
+
+## 8ServletContext:
+
+  为所有的Servlet提供公共的配置参数：故单例，接口下**只有一个Context对象**<img src="../Pic/image-20240110113821302.png" alt="image-20240110113821302" style="zoom:50%;" />
+
+##  Context重要API
+
+### GetRealPath
+
+获得一个指向项目部署位置下的某个文件的在具体电脑上的磁盘真实路径
+
+```java
+ String path = servletContext.getRealPath("upload");//获取此项目部署位置下的某个文件的磁盘真是路径，动态路径没有写死
+
+```
+
+### GetContextPath
+
+获取项目的上下文路径(访问路径），动态获取(涉及到后端的绝对路径)
+
+```java
+ String path = servletContext.getRealPath("upload");//获取此项目部署位置下的某个文件的磁盘真是路径，动态路径没有写死
+
+```
+
+### 域对象API
+
+不同的Servlet进行数据的传递时，可以将数据放在域对象里进行传递。最大的域对象是ServletContext(也是**应用域**)
+
+![image-20240110131124041](../Pic/image-20240110131124041.png)
+
+## 9请求和响应对应的API
+
+### 请求
+
+注意，get方式也可以有请求体，不只是post方式可以有。
+
+```java
+        //获取键值对,key=value无论是post还是get
+        String username = req.getParameter("username");
+        System.out.println(username);
+        System.out.println(req.getParameter("userPwd"));
+        //根据参数名获得多个参数值
+        String[] hobbies = req.getParameterValues("hobby");
+        System.out.println(Arrays.toString(hobbies));
+
+        //返回所有参数的map集合,不论是单值还是多值
+        Map<String, String[]> parameterMap = req.getParameterMap();
+        //获取请求体中的非键值对，读取字符输入流
+        BufferedReader reader = req.getReader();
+        //读取二进制字节流，读文件
+        ServletInputStream inputStream = req.getInputStream();
+```
+
+### 响应：
+
+```java
+        //响应行状态码
+        resp.setStatus(404);
+        //响应头
+        resp.setHeader("aaa","valuea");
+        resp.setHeader("Content-Type","text/html");
+        resp.setContentType("text/html");
+        resp.setContentLength(1500);
+        //响应体
+        PrintWriter writer = resp.getWriter();
+        writer.write(123);
+```
+
+## 10请求转发响应重定向
+
+<img src="../Pic/image-20240110155546345.png" alt="image-20240110155546345" style="zoom:70%;" />
