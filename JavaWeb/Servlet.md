@@ -17,6 +17,8 @@
 
 Servlet作用主要是承前启后，<img src="../Pic/image-20240106233529348.png" alt="image-20240106233529348" style="zoom:50%;" />
 
+所以到底什么是Servlet：是用Java编写的**服务端程序**，扩展服务器的功能——**处理来自客户端的请求并产生响应**
+
 ## 3 Servlet开发流程
 
 ### 创建Javaweb项目，将Tomcat添加为项目依赖
@@ -107,6 +109,10 @@ protected void service(HttpServletRequest request, HttpServletResponse response)
 /意味着匹配全部, 不包含jsp文件；/*匹配全部，包含jsp文件。
 
 *在哪里哪里就是模糊的。
+
+#### 关闭进程
+
+`sudo lsof -i :8080` `sudo kill -9 xxxx`
 
 ## 5 生命周期：
 
@@ -245,4 +251,60 @@ Http：
 
 ## 10请求转发响应重定向
 
+间接访问资源方式：
+
 <img src="../Pic/image-20240110155546345.png" alt="image-20240110155546345" style="zoom:70%;" />
+
+### 请求转发：
+
+内部行为(屏蔽客户端）客户端地址栏不变，客户端只发一个请求（只有一对req、resp对象）；req和resp的参数、数据都可以传递地拿到；既可以转发给servlet动态资源，也可以转发给静态页面或者是WEB-INF资源实现跳转；**不能转发给项目外的资源**
+
+```java
+   A: protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("servletA执行了");
+        //请求转发给B
+        //1获得转发对象
+        RequestDispatcher servletB = req.getRequestDispatcher("servletB");
+        //2转发请求req和resp对象
+        servletB.forward(req,resp);
+    }
+```
+
+### 响应重定向：
+
+<img src="../Pic/image-20240113201758720.png" alt="image-20240113201758720" style="zoom:50%;" />
+
+特点：
+
+- 通过response对象完成，在服务端提示下的**客户端的行为**（客户端又发了一次请求）
+- 客户端的地址栏发生变化
+- 客户端产生多次请求，请求的参数不能自动传递
+- 目标资源不能是WEB-INF下的资源，可以重定向到外部的web资源
+
+优先采用重定向来完成页面跳转。
+
+## 11处理问题
+
+### 乱码问题
+
+文件的编码和客户端的解码字符不同，会导致字符乱码 
+
+- IDEA默认使用UTF-8进行编码
+- Get请求时，Tomcat服 务器端解码默认使用的是UTF-8，如果客户端发出的表单请求使用的是其他字符可能出现乱码。（可以在配置中单独设置**urlencoding**）
+- Post请求可能也会出现乱码，但是不同于Get的urlencoding，因为url里面不再有参数（post特点）; 可以先设置请求体中的字符集解码方式：`req.setCharacterEncoding("")`
+- 响应乱码问题：响应体使用UTF-8进行编码，客户端的解码发生乱码，设置响应体：`resp.setCharacterEncoding("GBK")`,但是最好**告诉客户端使用指定的字符集进行解码**，设置响应头:`resp.setContentType("text/html;charset=UTF-8")`
+
+### 路径问题
+
+相对路径
+
+- 注意，在包下使用.表示路径；在目录directory下使用/表示路径；相对路径以当前所在路径为出发点，不以/开头，但可以用./和../；规则：**在当前资源所在路径之后拼接目标资源的路径，接着发送请求找目标资源。**
+- 要时刻注意*当前资源的所在路径*（得看浏览器具体**url**），所以在写相对路径时要注意*不能只看磁盘目录结构*
+
+绝对路径
+
+- 不同项目中固定的出发点不一致——绝对路径要*补充项目上下文*（但是此路径可以改变）
+- 从8080端口出发；
+- 可以在head里面加一个`<base href='/xxx/'>`，将前面没有修饰的相对路径自动补充，变为绝对路径
+
+注意，访问web文件夹下的资源路径里*为什么没有web*，是因为`web`通常是Web应用程序的根目录，在部署到服务器（如Tomcat）后，它会成为URL路径的隐含起始点。
