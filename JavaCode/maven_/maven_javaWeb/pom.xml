@@ -8,6 +8,7 @@
     <artifactId>maven_javaWeb</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
+
     <build>
         <plugins>
             <plugin>
@@ -16,7 +17,20 @@
                 <version>3.2.2</version>
             </plugin>
         </plugins>
+
+        <resources>
+            <resource>
+                <!--资源所在目录 -->
+                <directory>src/main/java</directory>
+                <includes>
+                    <!--设置包含的资源类型 -->
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
+
+
     <dependencies>
         <dependency>
             <groupId>com.ltx.maven</groupId>

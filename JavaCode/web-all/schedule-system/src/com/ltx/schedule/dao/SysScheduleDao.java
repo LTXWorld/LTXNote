@@ -2,6 +2,8 @@ package com.ltx.schedule.dao;
 
 import com.ltx.schedule.pojo.SysSchedule;
 
+import java.util.List;
+
 /**
  * ClassName: SysScheduleDao
  * Package:com.ltx.schedule.dao
@@ -18,6 +20,7 @@ public interface SysScheduleDao {
      * @return 返回影响数据库记录的行数，为0增加失败；大于0增加成功
      */
     int addSchedule(SysSchedule schedule);
+    List<SysSchedule> findAll();
 }
 /**
  *

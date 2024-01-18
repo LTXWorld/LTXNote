@@ -7,6 +7,14 @@
     <groupId>com.ltx.maven</groupId>
     <artifactId>maven_java</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <!-- Maven工程的属性-->
+    <properties>
+        <maven.comliler.source>17</maven.comliler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring.version>6.0.11</spring.version>
+        <junit.version>5.8.2</junit.version>
+    </properties>
     <!--Maven工程的打包方式 -->
     <packaging>jar</packaging>
     <!-- -->
@@ -27,4 +35,10 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <!-- 自定义打包名称-->
+        <finalName>xxx.jar</finalName>
+
+    </build>
 </project>
