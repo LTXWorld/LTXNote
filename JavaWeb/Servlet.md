@@ -308,3 +308,19 @@ Http：
 - 可以在head里面加一个`<base href='/xxx/'>`，将前面没有修饰的相对路径自动补充，变为绝对路径
 
 注意，访问web文件夹下的资源路径里*为什么没有web*，是因为`web`通常是Web应用程序的根目录，在部署到服务器（如Tomcat）后，它会成为URL路径的隐含起始点。
+
+对于重定向时，其**绝对路径**最好使用方法获得`req.getServletContext().getContextPath()/servletB`；而对于请求转发，不需要写项目上下文直接以/开头即可。
+
+#### 绝对路径上下文变化问题
+
+部署app时将上下文路径只设置为/即可。
+
+## 12MVC架构模式
+
+Model View Controller
+
+
+
+<img src="../Pic/image-20240115172411119.png" alt="image-20240115172411119" style="zoom:50%;" />
+
+![image-20240115173431793](../Pic/image-20240115173431793.png)
