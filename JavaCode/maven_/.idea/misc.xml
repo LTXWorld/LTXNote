@@ -9,6 +9,8 @@
       <list>
         <option value="$PROJECT_DIR$/maven_java/pom.xml" />
         <option value="$PROJECT_DIR$/maven_javaWeb/pom.xml" />
+        <option value="$PROJECT_DIR$/maven_parent/pom.xml" />
+        <option value="$PROJECT_DIR$/maven_shop/pom.xml" />
       </list>
     </option>
   </component>
