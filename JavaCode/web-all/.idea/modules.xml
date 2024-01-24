@@ -6,6 +6,9 @@
       <module fileurl="file://$PROJECT_DIR$/demo02-servlet01/demo02-servlet01.iml" filepath="$PROJECT_DIR$/demo02-servlet01/demo02-servlet01.iml" />
       <module fileurl="file://$PROJECT_DIR$/demo03-servletconfig-servletContext/demo03-servletconfig-servletContext.iml" filepath="$PROJECT_DIR$/demo03-servletconfig-servletContext/demo03-servletconfig-servletContext.iml" />
       <module fileurl="file://$PROJECT_DIR$/demo04-forward-redirect/demo04-forward-redirect.iml" filepath="$PROJECT_DIR$/demo04-forward-redirect/demo04-forward-redirect.iml" />
+      <module fileurl="file://$PROJECT_DIR$/demo06-cookie-session/demo06-cookie-session.iml" filepath="$PROJECT_DIR$/demo06-cookie-session/demo06-cookie-session.iml" />
+      <module fileurl="file://$PROJECT_DIR$/demo07/demo07.iml" filepath="$PROJECT_DIR$/demo07/demo07.iml" />
+      <module fileurl="file://$PROJECT_DIR$/demo08-filter/demo08-filter.iml" filepath="$PROJECT_DIR$/demo08-filter/demo08-filter.iml" />
       <module fileurl="file://$PROJECT_DIR$/schedule-system/schedule-system.iml" filepath="$PROJECT_DIR$/schedule-system/schedule-system.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/web-all.iml" filepath="$PROJECT_DIR$/.idea/web-all.iml" />
     </modules>

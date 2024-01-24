@@ -19,7 +19,7 @@ while True:
     cv2.imshow('USB Cam', frame)
     
     # 如果按下'q'键，则退出循环
-    if cv2.waitKey(1) == ord('q'):
+    if cv2.waitKey(10) == ord('q'):
         break
 
 # 释放摄像头并关闭所有窗口

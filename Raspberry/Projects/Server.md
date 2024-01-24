@@ -108,3 +108,57 @@ show databases;
 
 
 
+#NFS File Server
+
+## NFS
+
+Network File System
+
+## Procedure
+
+### Install the NFS on Pi as Server side
+
+```bash
+sudo apt-get install portmap
+sudo apt-get install nfs-kernel-server
+```
+
+### Edit the configuration
+
+```bash
+cd /mnt
+sudo mkdir /mnt/nfs
+sudo vi /etc/exports #or nano
+```
+
+Then add this line in it`/mnt/nfs *(rw,sync,no_root_squash)`
+
+### Start NFS server
+
+```bash
+sudo /etc/init.d/nfs-kernel-server restart
+```
+
+Ps.This command is important,because you don't know when your connection or something was wrong,so you can use this to restart.
+
+OK,after that,the work on RaspberryPI is finished,then we turn to your PC or anything transfering with the Pi
+
+In my Mac,I should use the `sudo -i` to enter the root module,and use this command to mount the NFS
+
+```bash
+sudo mount -t nfs -o nolock,resvport 172.20.10.11:/mnt/nfs /Users/lutao/Resp
+```
+
+In this command,`IP:file in your Pi  file in your PC`
+
+As result,your own folder will be replaced by the nfs folder.
+
+![image-20240122102311996](../../Pic/image-20240122102311996.png)
+
+### Make the other's configuration
+
+When I finish these things,I find that I can't edit any files in the nfs folder,so in the server side(Raspberry Pi),I change the authority about any file
+
+`sudo chmod 666 test.txt`
+
+But I can't edit the file in nfs with my client side.

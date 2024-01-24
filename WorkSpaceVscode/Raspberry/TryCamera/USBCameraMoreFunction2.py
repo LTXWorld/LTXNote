@@ -36,11 +36,11 @@ while True:
     cv2.imshow('USB Cam', frame)
 
     # 检查是否开始/停止录制
-    if cv2.waitKey(1) == ord('r'):
+    if cv2.waitKey(10) == ord('r'):
         recording = not recording
         if recording:
             current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            video_filename = f"/home/lutao/Documents/New/recording_{current_time}.avi"
+            video_filename = f"/home/pi/myshare/RecordTest/recording_{current_time}.avi"
             fourcc = cv2.VideoWriter_fourcc(*'XVID')
             out = cv2.VideoWriter(video_filename, fourcc, 20.0, (640, 480))
         else:
@@ -50,13 +50,13 @@ while True:
         out.write(frame)
 
     # 截图功能
-    if cv2.waitKey(1) == ord('s'):
+    if cv2.waitKey(10) == ord('s'):
         current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        image_filename = f"/home/lutao/Documents/New/screenshot_{current_time}.jpg"
+        image_filename = f"/home/pi/myshare/RecordTest/screenshot_{current_time}.jpg"
         cv2.imwrite(image_filename, frame)
 
     # 如果按下'q'键，则退出循环
-    if cv2.waitKey(1) == ord('q'):
+    if cv2.waitKey(10) == ord('q'):
         break
 
 cap.release()

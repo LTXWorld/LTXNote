@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+
+    <filter>
+        <filter-name>loggingFilter</filter-name>
+        <filter-class>com.ltx.filter.loginFilter</filter-class>
+    </filter>
+<!--    配置过滤资源规则-->
+    <filter-mapping>
+        <filter-name>loggingFilter</filter-name>
+<!--        url-pattern or servlet name两种过滤规则
+            一个mapping中可以同时存在多个过滤规则-->
+        <url-pattern>/servlet1</url-pattern>
+        <servlet-name>servlet1</servlet-name>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>lifeCycleFilter</filter-name>
+        <filter-class>com.ltx.filter.LifeCycleFilter</filter-class>
+        <init-param>
+            <param-name>dataTimePattern</param-name>
+            <param-value>yyyy-MM-dd HH:mm:ss</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>lifeCycleFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+</web-app>
