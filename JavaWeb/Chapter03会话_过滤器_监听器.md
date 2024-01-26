@@ -201,3 +201,49 @@ session的API有`setAttribute`和`getAttribute`等
 
 # 监听器
 
+监听域对象发生的事件，触发相应的代码（**实现相关的监听器接口**即可）
+
+![image-20240124162951780](../Pic/image-20240124162951780.png)
+
+```java
+@WebListener
+public class MyapplicationListenner implements ServletContextListener, ServletContextAttributeListener {
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        //
+        System.out.println(sce.getServletContext().hashCode()+"xxx应用域被初始化");
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        System.out.println(sce.getServletContext().hashCode()+"xxx应用域被销毁了");
+    }
+
+    @Override
+    public void attributeAdded(ServletContextAttributeEvent scae) {
+        ServletContext application = scae.getServletContext();
+        String key = scae.getName();
+        Object value = scae.getValue();
+        System.out.println(application.hashCode() + "应用域增加了" +key+":" + value);
+    }
+
+    @Override
+    public void attributeRemoved(ServletContextAttributeEvent scae) {
+        //移除了数据
+    }
+
+    @Override
+    public void attributeReplaced(ServletContextAttributeEvent scae) {
+        //替换数据
+        ServletContext application = scae.getServletContext();
+        String key = scae.getName();
+        Object value = scae.getValue();//这里获取的是旧的值
+        Object valueNew = application.getAttribute("keyA");
+        System.out.println(application.hashCode() + "应用域增加了" +key+":" + value);
+    }
+}
+//并且在xml文件中配置listener标签路径
+```
+
+- 注意session的时机是需要自己创建销毁的，应用域项目一旦部署就有，请求一旦发出请求自动就有。
+- session在服务器上会有很多，为了不浪费内存，可以将一些session通过IO放入磁盘中，称为钝化（活化）。

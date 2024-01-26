@@ -94,3 +94,16 @@ Tailnet，可以远程控制计算机，但是并不安全，别人可以截获�
 1. **HMAC（基于散列的消息认证码）**：与散列函数结合使用，例如HMAC-SHA1或HMAC-SHA256，来提供消息认证。
 2. **SHA-1**：以前广泛使用的散列函数，但由于安全性问题，现在不推荐使用。
 3. **SHA-2**：一组散列函数，包括SHA-256和SHA-512，提供比SHA-1更强的安全性
+
+## 处理问题
+
+我在Github上面存储我的笔记仓库，为了可以在不同的设备之间同步我的笔记，但是我发现某一天两台呢设备在使用SSH远程访问Github仓库时都出现了
+
+```bash
+ssh:connet to host github.com port 22: Connection timed out
+fatal: Could not read from remote repository
+
+Please make sure you have thecorrect access rights
+and the repository exists.
+```
+
