@@ -247,3 +247,43 @@ public class MyapplicationListenner implements ServletContextListener, ServletCo
 
 - 注意session的时机是需要自己创建销毁的，应用域项目一旦部署就有，请求一旦发出请求自动就有。
 - session在服务器上会有很多，为了不浪费内存，可以将一些session通过IO放入磁盘中，称为钝化（活化）。
+
+# AJAX简介
+
+向服务器后端发送请求的方式：
+
+1 、输入url地址
+
+2、html
+
+3、a标签、form标签
+
+- 需要手动控制提交的产生，在新的页面上获取响应信息
+
+4、运行JS代码产生请求
+
+- **通过事件触发JS代码运行发送请求**，可以通过js代码动态处理是否要填专业面还是将响应的信息通过DOM编程显示在dom树中
+
+## 同步交互与异步交互
+
+AJXA：Asynchronous JavaScript and XML(异步的)
+
+<img src="../Pic/image-20240128145607810.png" alt="image-20240128145607810" style="zoom:50%;" />
+
+- 同步交互你一步我一步，存在着等待时间（因为需要页面跳转）
+
+<img src="../Pic/image-20240128150014384.png" alt="image-20240128150014384" style="zoom:50%;" />
+
+- 使用JS对象XmlHttpRequest来进行异步交互（不需要页面切换，客户可以持续运行）
+
+## 通过XmlHttpRequest实现（原生JS的实现）
+
+实现方式
+
+- 原生JS
+- 使用框架 VUE
+- 第三方封装（一般不用） 
+
+### 原生的缺点
+
+ 

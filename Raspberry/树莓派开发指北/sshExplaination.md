@@ -76,6 +76,8 @@ Tailnet，可以远程控制计算机，但是并不安全，别人可以截获�
 - 客户端使用私钥解密这个挑战，并将结果发送回服务器。
 - 如果服务器能够验证解密结果，这证明客户端拥有匹配的私钥，从而完成认证。
 
+所以，公钥是用来验证服务器身份并且后续生成挑战消息用来验证客户端，公钥可以放置在任何服务器上；私钥是用来证明你是你的工具，必须存放在本地，如果泄漏则会假冒你的身份来访问存放你的公钥的服务器。
+
 ### 加密算法
 
 #### 密钥交换算法
@@ -107,3 +109,32 @@ Please make sure you have thecorrect access rights
 and the repository exists.
 ```
 
+很奇怪啊，之前一直可以的，于是我查了查本地存储的公钥来对照我GIthub后台的公钥。
+
+<img src="../../Pic/image-20240126165719950.png" alt="image-20240126165719950" style="zoom:50%;" />
+
+```bash
+cd ~/.ssh
+ls -l
+cat id_rsa.pub
+```
+
+<img src="../../Pic/image-20240126165112398.png" alt="image-20240126165112398" style="zoom:50%;" />
+
+其中`id_rsa`是私钥文件，`id_rsa.pub`是公钥文件，二者成为文件对。
+
+最后我发现是终端的网络问题，于是使用vpn当中的“复制终端代理命令”的功能，再后续push的过程中出现来自github的提示
+
+```bash
+remote: Support for password authentication was removed on August 13, 2021.
+remote: Please see https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls for information on currently recommended modes of authentication.
+fatal: Authentication failed for 'https://github.com/LTXWorld/LTXNode/'
+```
+
+原来github从2021年就已经不再支持这种密码的登录方式，转而使用个人访问令牌的方式进行认证（但是这跟我原本的SSH有什么关系呢？，又不是不支持SSH密钥认证）
+
+```bash
+git remote set-url origin  https://<your_token>@github.com/<USERNAME>/<REPO>.git
+```
+
+之后再进行`git push git pull`就没有问题了。
