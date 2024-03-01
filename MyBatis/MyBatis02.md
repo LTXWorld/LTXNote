@@ -134,7 +134,7 @@ insert into t_car(id,car_num,brand,guide_price,produce_time,car_type) values (nu
 
 ### select语句特殊处理
 
-1、查一个
+#### 1、查一个
 
 使用`SqlSession selectone()`
 
@@ -161,7 +161,7 @@ ps.如何解决数据库中的列名和java中类的属性名不一致——使�
     </select>
 ```
 
-2、查所有
+#### 2、查所有
 
 结果保存在list集合中,使用`Sqlsession selectList()`
 

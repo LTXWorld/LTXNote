@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script>
+        //使用let和const来代替var声明变量
+        //1 let不能重复声明
+        let j = 10
+        //2 let有块级作用域，只能在花括号里面访问
+        {
+            let j = 10
+            console.log(j)
+        }
+        //3 let不会进行预解析变量提升
+        console.log(a)
+        var a = 10
+        console.log(i)
+        let i = 10
+        //4 let定义的全局变量不会作为window的属性
+        var a = 10
+        console.log(window.a)
+
+        let b = 10
+        //5 let在es6中推荐使用
+        //6 const 就是不可修改的let，类似于final修饰的变量
+        let a = 10
+        a = 20
+
+        const c = 10
+        c = 20//不可修改
+
+
+
+        //模版字符串
+        let city = '北京'
+        let str = `    <ul>
+                    <li></li>
+                    <li></li>
+                    <li>${city}</li>
+                    <li></li>
+                    <li></li>
+                </ul>`
+        console.log(str)
+
+        //
+        
+    </script>
+</head>
+<body>
+
+</body>
+</html>

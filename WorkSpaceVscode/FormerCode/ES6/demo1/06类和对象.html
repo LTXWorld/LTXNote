@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        class Person{
+            name;//使用#代替private，并且完整属性名是#name，而不是单纯的name
+            age;
+            //getter setter
+            get Getname(){
+                return this.name
+            }
+            set Setname(name){
+                this.name = name
+            }
+            //实例方法
+            eat(food){
+                console.log(`${this.age} 岁的${this.name}`)
+            }
+            //静态方法
+            static sum(a,b){
+                return a + b
+            }
+            //构造器
+            constructor(name,age){
+                this.name = name;
+                this.age = age;
+            }
+        }
+        class Student extends Person{
+            score;
+            study(){
+                console.log(`${this.age}岁的${this.name}正在学习`)
+            }
+            constructor(name,age,score){
+                super(name,age)
+                this.score = score
+            }
+        }
+
+        let person = new person("zz",8)
+        person.eat("火锅")
+        
+
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

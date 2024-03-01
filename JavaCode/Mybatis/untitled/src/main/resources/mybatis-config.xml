@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+<!--    <settings>-->
+<!--        <setting name="logImpl" value="STDOUT_LOGGING"/>-->
+<!--        <setting name="" value=""/>-->
+<!--        <setting name="" value=""/>-->
+<!--    </settings>-->
+
+    <typeAliases>
+        <typeAlias type="com.ltx.mybatis.pojo.Car" alias="car"/>
+        <typeAlias type="com.ltx.mybatis.pojo.Log" alias="log"/>
+
+    </typeAliases>
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <!--          下面这个url标明了具体数据库，3306端口号后面是具体数据库名     -->
+                <property name="url" value="jdbc:mysql://localhost:3306/powernode"/>
+                <property name="username" value="root"/>
+                <property name="password" value="iutaol123"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+
+        <mapper resource="CarMapper.xml"/>
+        <mapper resource="logMapper.xml"/>
+    </mappers>
+</configuration>

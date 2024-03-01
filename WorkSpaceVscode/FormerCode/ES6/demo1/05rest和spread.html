@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        //rest解决剩余的参数接收问题:...arr 当作形参使用
+        let fun1 = (a,b,c,d,... arr)=>{//在方法体内部arr当作数组使用
+            console.log(a,b,c,d)
+            console.log(arr)
+        }
+        fun1(1,2,3,4,5,6,7,8,9)
+        
+        //spread 展开， rest在实参上使用
+        let arr = [1,2,3]
+        let fun2 = (a,b,c)=>{
+            console.log(a,b,c)
+        }
+        fun1(...arr)//相当于将arr展开以1,2,3的形式分别赋给参数
+
+        //spread快速合并数组，对象
+        let a = [1,2,3]
+        let b = [4,5,6]
+        let c = [...a,...b]//相当于[1,2,3,4,5,6]
+
+        let person1={name:"张三"}
+        let person2={age:"10"}
+        let person3={gender:"boy"}
+        let person4 = {...person1,...person2,...person3}
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
