@@ -9,6 +9,12 @@
 <!--        <setting name="" value=""/>-->
 <!--    </settings>-->
 
+    <typeAliases>
+        <typeAlias type="com.ltx.mybatis.pojo.Car" alias="car"/>
+        <typeAlias type="com.ltx.mybatis.pojo.Log" alias="log"/>
+
+    </typeAliases>
+
     <environments default="development">
         <environment id="development">
             <transactionManager type="JDBC"/>
@@ -22,6 +28,8 @@
         </environment>
     </environments>
     <mappers>
+
         <mapper resource="CarMapper.xml"/>
+        <mapper resource="logMapper.xml"/>
     </mappers>
 </configuration>

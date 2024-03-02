@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ltx.mybatis.mapper.StudentMapper">
+<!--每一个Mapper.xml文件对应于一个java接口，就是namespace中路径下的Java接口
+    每一个SQL语句都与接口中的一个方法相对应-->
+
+    <select id="selectById" resultType="student">
+        select * from t_student where id = #{id}
+    </select>
+
+    <insert id="insertStudentByMap">
+        insert into t_student(id,name,age,sex,birth,height) values(null,#{},#{},#{},#{},#{})
+    </insert>
+</mapper> 

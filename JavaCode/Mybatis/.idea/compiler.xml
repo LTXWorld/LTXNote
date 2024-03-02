@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="parse-xml-by-dom4j" />
         <module name="mybatis-005-crud2" />
+        <module name="mybatis-006-param" />
         <module name="mybatis-001-introduction" />
         <module name="mybatis-004-web" />
         <module name="mybatis-002-crud" />

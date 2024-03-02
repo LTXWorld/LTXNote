@@ -12,6 +12,7 @@
         <option value="$PROJECT_DIR$/parse-xml-by-dom4j/pom.xml" />
         <option value="$PROJECT_DIR$/untitled/pom.xml" />
         <option value="$PROJECT_DIR$/mybatis-004-web/pom.xml" />
+        <option value="$PROJECT_DIR$/mybatis-006-param/pom.xml" />
       </list>
     </option>
   </component>
