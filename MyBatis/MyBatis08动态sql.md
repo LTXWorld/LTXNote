@@ -95,4 +95,6 @@
 - separator:循环之间的分隔符
 - open：拼接的所有sql语句最前面以何开始；close以何结束
 
-批量插入
+### sql标签、include联用
+
+sql标签可以简化复用的代码，使用include标签引用这些复用的代码。

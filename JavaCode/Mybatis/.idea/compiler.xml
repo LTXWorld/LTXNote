@@ -6,11 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="parse-xml-by-dom4j" />
         <module name="mybatis-006-param" />
-        <module name="mybatis-001-introduction" />
         <module name="mybatis-004-web" />
         <module name="mybatis-007-dynamic" />
+        <module name="parse-xml-by-dom4j" />
+        <module name="mybatis-008-Ni-test" />
+        <module name="mybatis-001-introduction" />
         <module name="mybatis-002-crud" />
       </profile>
     </annotationProcessing>
