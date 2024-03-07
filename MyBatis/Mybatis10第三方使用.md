@@ -28,3 +28,10 @@ PageInfo还可以给出页间隔符navigatePages
 
 # 注解编程
 
+如果语句比较复杂，建议还是使用XML文件来映射语句；如果仅仅是单表的操作，可以使用注解（不再需要Mapper.xml文件）
+
+```java
+@Insert("insert into t_car values(null,#{carNum},#{brand},#{guidePrice},#{produce},#{carType})")
+int insert(Car car);
+```
+

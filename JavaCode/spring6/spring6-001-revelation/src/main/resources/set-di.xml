@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="orderBean" class="com.powernode.spring6.dao.OrderDao"/>
+    <!-- 使用ref属性来引入，这就是注入外部的bean   -->
+    <bean id="orderServiceBean" class="com.powernode.spring6.service.OrderService">
+        <property name="orderDao" ref="orderBean"/>
+    </bean>
+
+    <bean id="orderServiceBean2" class="com.powernode.spring6.service.OrderService">
+        <property name="orderDao">
+            <bean class="com.powernode.spring6.dao.OrderDao"/>
+        </property>
+    </bean>
+</beans>
