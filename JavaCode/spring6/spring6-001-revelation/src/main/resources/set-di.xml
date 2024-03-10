@@ -13,4 +13,9 @@
             <bean class="com.powernode.spring6.dao.OrderDao"/>
         </property>
     </bean>
+
+
+    <bean id="orderDao" class="com.powernode.spring6.dao.OrderDao" ></bean>
+
+    <bean id="orderService" class="com.powernode.spring6.service.OrderService" autowire="byName"/>
 </beans>

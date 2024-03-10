@@ -107,4 +107,79 @@ public class LeetCodeTest {
         }
         return dp[len1][len2];
     }
+
+    //T647
+    @Test
+    public int countSubstrings(String s) {
+        int len = s.length();
+        boolean[][] dp = new boolean[len][len];
+        int result = 0;//用于计数
+        for (int i = len-1; i >= 0; i--) {
+            for (int j = i; j < len; j++) {
+                if (s.charAt(i) == s.charAt(j)){
+                    if (j-i <= 1){
+                        dp[i][j] = true;
+                        result ++;
+                    }else if (dp[i+1][j-1]){
+                        dp[i][j] = true;
+                        result ++;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    //T5
+    @Test
+    public String longestPalindrome(String s) {
+        int len = s.length();
+        boolean[][] dp = new boolean[len][len];
+        //声明最大长度以及开始位置，结束位置可以由二者推出
+        int maxLen = 0;
+        int startIndex = 0;
+        //
+        for (int i = len-1; i >= 0; i--) {
+            for (int j = i; j < len; j++) {
+                if (s.charAt(i) == s.charAt(j)){
+                    if (j-i <= 1){
+                        dp[i][j] = true;
+                        if (j-i+1 > maxLen){
+                            maxLen = j - i + 1;
+                            startIndex = i;
+                        }
+                    }else if (dp[i+1][j-1]){
+                        dp[i][j] = true;
+                        if (j-i+1 > maxLen){
+                            maxLen = j - i + 1;
+                            startIndex = i;
+                        }
+                    }
+                }
+            }
+        }
+        return s.substring(startIndex,startIndex+maxLen);
+    }
+
+
+    //T516
+    @Test
+    public int longestPalindromeSubseq(String s) {
+        int len = s.length();
+        int[][] dp = new int[len][len];
+        for (int i = 0; i < len; i++) {
+            dp[i][i] = 1;
+        }
+        //
+        for (int i = len-1; i >= 0; i--) {
+            for (int j = i+1; j < len; j++) {//这里与前面的不同，j从i后面开始,因为底下有j-1
+                if (s.charAt(i) == s.charAt(j)){
+                    dp[i][j] = dp[i+1][j-1] + 2;
+                }else {
+                    dp[i][j] = Math.max(dp[i+1][j], dp[i][j-1]);
+                }
+            }
+        }
+        return dp[0][len-1];//注意最后的返回结果，全范围内的最长回文子序列
+    }
 }

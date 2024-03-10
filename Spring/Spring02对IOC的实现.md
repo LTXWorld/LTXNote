@@ -102,7 +102,7 @@ public class CustomerService {
 
 使用map标签以及entry,value标签，注意非简单类型使用`<entry key-ref="" value-ref=""/>`
 
-注意Properties也是Map集合的一种，但是其要求与Map不同：
+注意**Properties也是Map集合的一种**，但是其要求与Map不同：
 
 <img src="../Pic/image-20240306172257905.png" alt="image-20240306172257905" style="zoom:50%;" />
 
@@ -118,4 +118,63 @@ public class CustomerService {
 - 使用实体符号代替特殊符号（难记）
 - 使用`<![CDATA[语句]]>`，只能用**value标签**（不是普通的value）
 
-## P命名空间注入
+### P命名空间注入
+
+本质也是set注入。
+
+- 配置文件头部增加相关p配置
+- 不再使用property，而是直接`p:属性名="属性值"`；如果不是简单类型在属性名之后加`-ref`即可
+
+![image-20240308183546547](../Pic/image-20240308183546547.png)
+
+## C命名空间注入
+
+简化构造注入。
+
+方法与上面的P命名空间相似。
+
+## Util命名空间注入
+
+对配置信息的复用。（连接相同的数据库使用不同的数据源）
+
+- 配置头部配置信息(还要在schema里面添加util，为了可以使用util标签)
+
+```xml
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+</beans>
+```
+
+- 使用util标签<img src="../Pic/image-20240308185429760.png" alt="image-20240308185429760" style="zoom:50%;" />
+
+## 自动装配
+
+基于**set**方式。
+
+### 名称
+
+```xml
+    <bean id="orderDao" class="com.powernode.spring6.dao.OrderDao" ></bean>
+
+    <bean id="orderService" class="com.powernode.spring6.service.OrderService" autowire="byName"/>
+```
+
+- 注意被注入的对象的bean的id一定得满足规范
+
+### 类型
+
+<img src="../Pic/image-20240308191335463.png" alt="image-20240308191335463" style="zoom:50%;" />
+
+- 需要注意某种类型的实例只能有一个
+- 可以不需要id，因为基于类型。
+
+## Context引入外部配置文件
+
+- 引入context命名空间，类比Util的引入
+- 再使用<img src="../Pic/image-20240308193041646.png" alt="image-20240308193041646" style="zoom:50%;" />标签来确定配置文件路径
+- 最后使用`${key}`来获取配置值，但是注意此**符号优先取系统变量**。（所以尽量在key前面加点标签）
+
