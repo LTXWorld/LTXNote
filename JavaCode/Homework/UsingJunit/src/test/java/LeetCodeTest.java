@@ -1,5 +1,10 @@
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.LinkedList;
+
 /**
  * ClassName: LeetCodeTest
  * Package:PACKAGE_NAME
@@ -181,5 +186,62 @@ public class LeetCodeTest {
             }
         }
         return dp[0][len-1];//注意最后的返回结果，全范围内的最长回文子序列
+    }
+    //T739
+    @Test
+    public int[] dailyTemperatures(int[] temperatures) {
+        int len = temperatures.length;
+        int[] result = new int[len];//声明结果数组
+        //声明单调栈,单调栈中保存原数组的下标
+        Deque<Integer> stack = new LinkedList<>();
+        stack.push(0);//将下标0入栈
+        //开始遍历温度数组
+        for (int i = 1; i < len; i++) {
+            if (temperatures[i] <= temperatures[stack.peek()]){
+                stack.push(i);
+            }else {
+                while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]){
+                    //保证栈不为空并且现在的比较元素大于栈顶元素
+                    result[stack.peek()] = i - stack.peek();//栈顶元素即需要赋值的下标位置，因为找到了第一个大于它的元素（的下标）
+                    stack.pop();
+                }
+                stack.push(i);//如果不大于（或者栈已经为空了）需要将当前元素入栈，别忘记这一步。
+            }
+        }
+        return result;
+    }
+    //T496
+    @Test
+    public int[] nextGreaterElement(int[] nums1, int[] nums2) {
+        int len1 = nums1.length;
+        int len2 = nums2.length;
+        //声明结果数组与单调栈
+        int[] result = new int[len1];
+        Arrays.fill(result,-1);//根据题意初始化为-1
+        //
+        Deque<Integer> stack = new LinkedList<>();
+        stack.push(0);
+        //声明哈希表来保存nums1的反向映射关系
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < len1; i++) {
+            map.put(nums1[i],i);//key(值）-value（下标）
+        }
+        //
+        for (int i = 1; i < len2; i++) {
+            if (nums2[i] <= nums2[stack.peek()]){
+                stack.push(stack.peek());
+            }else {
+                while (!stack.isEmpty() && nums2[i] > nums2[stack.peek()]){
+                    //如果此时2中的某个元素与1中相同（符合题意）
+                    if (map.containsKey(nums2[stack.peek()])){
+                        Integer index = map.get(nums2[stack.peek()]);
+                        result[index] = nums2[i];//将2中下一个大的数填充结果数组
+                    }
+                    stack.pop();
+                }
+                stack.push(i);
+            }
+        }
+        return result;
     }
 }
