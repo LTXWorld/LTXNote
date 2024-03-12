@@ -1,9 +1,6 @@
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.*;
 
 /**
  * ClassName: LeetCodeTest
@@ -238,6 +235,129 @@ public class LeetCodeTest {
                         result[index] = nums2[i];//将2中下一个大的数填充结果数组
                     }
                     stack.pop();
+                }
+                stack.push(i);
+            }
+        }
+        return result;
+    }
+
+    //T503尝试
+    @Test
+    public int[] nextGreaterElements1(int[] nums) {
+        int len = nums.length;
+        int[] result = new int[len];
+        Arrays.fill(result,-1);
+        //
+        Deque<Integer> stack = new LinkedList<>();
+        stack.push(0);
+        for (int i = 1; i < len; i++) {
+            if (nums[i] <= nums[stack.peek()]){
+                stack.push(i);
+            }else {
+                while (!stack.isEmpty() && nums[i] > nums[stack.peek()]){
+                    result[stack.peek()] = nums[i];
+                    stack.pop();
+                }
+                stack.push(i);
+            }
+        }
+        //这样正常的操作完之后栈内会剩下一些找不到下一个最大的元素，如果有，也是成环前面的元素
+//        while (!stack.isEmpty())
+        return result;
+    }
+    //T503正解1
+    public int[] nextGreaterElements(int[] nums) {
+        int len = nums.length;
+        int[] result = new int[len];
+        Arrays.fill(result,-1);
+        if (len == 1){
+            return result;
+        }
+        //
+        Deque<Integer> stack = new LinkedList<>();
+        stack.push(0);
+        //将每一个下标位置都改成i%len，即代表了在一圈中的每个位置。
+        for (int i = 1; i < len * 2; i++) {
+            if (nums[i%len] <= nums[stack.peek()]){
+                stack.push(i%len);
+            }else {
+                while (!stack.isEmpty() && nums[i%len] > nums[stack.peek()]){
+                    result[stack.peek()] = nums[i%len];
+                    stack.pop();
+                }
+                stack.push(i%len);
+            }
+        }
+        return result;
+    }
+
+    //
+    @Test
+    public int trap(int[] height) {
+        int len = height.length;
+        if (len <= 2) return 0;
+        //
+        Stack<Integer> stack = new Stack<>();
+        stack.push(0);
+        //
+        int sumResult = 0;
+        //
+        for (int i = 1; i < len; i++) {
+            if (height[i] <= height[stack.peek()]){
+                stack.push(i);
+            }else {
+                while (! stack.isEmpty() && height[i] > height[stack.peek()]){
+                    //当遇到栈顶比自己小的即mid，同时也将其出栈了。
+                    int mid = stack.pop();
+                    if (! stack.isEmpty()){//注意这里需要判断栈是否为空，如果为空代表着没有左边的元素了。
+                        int left = stack.peek();//这里无需弹出左边元素，等着在while循环里继续比较就行。
+                        int h = Math.min(height[left], height[i]) - height[mid];
+                        int w = i - left - 1;
+                        int square = h * w;//获得可接雨水的面积（横向操作）
+                        if (square > 0) sumResult += square;
+                    }
+                }
+                stack.push(i);
+            }
+        }
+        return sumResult;
+    }
+
+    //T84
+    @Test
+    public int largestRectangleArea(int[] heights) {
+        int len = heights.length;
+        //对数组进行填充0
+        int[] newHeights = new int[len + 2];
+        int newLen = newHeights.length;
+        newHeights[0] = 0;
+        newHeights[newLen-1] = 0;
+        //先往两侧填充0，再将中间的数填充好
+        for (int i = 0; i < len; i++) {
+            newHeights[i+1] = heights[i];
+        }
+        heights = newHeights;//直接夺舍了？
+        //
+        Stack<Integer> stack = new Stack<>();
+        stack.push(0);
+        int result = 0;//结果
+        //
+        for (int i = 1; i < newLen; i++) {
+            if (heights[i] >= heights[stack.peek()]){
+                //单调递减栈
+                stack.push(i);
+            }else {
+                while (!stack.isEmpty() && heights[i] < heights[stack.peek()]){
+                    //找到了右边第一个小的
+                    int mid = stack.peek();
+                    stack.pop();
+                    //左边第一个小的在栈中，右边第一个小的即当前遍历到的元素
+                    int left = stack.peek();
+                    int right = i;
+                    int w = right - left - 1;
+                    int h = heights[mid];
+                    result = Math.max(result, w * h);
                 }
                 stack.push(i);
             }

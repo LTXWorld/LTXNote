@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--配置文件是使用myspring框架的人写的-->
+<beans>
+    <bean id="user" clas="com.ltx.myspring.bean.User">
+        <property name="name" value="张三"></property>
+        <property name="age" value="30"></property>
+    </bean>
+
+    <bean id="userDao" class="com.ltx.myspring.bean.UserDao"></bean>
+
+    <bean id="userService" class="com.ltx.myspring.bean.UserService">
+        <property name="userDao" ref="userDaoBean"/>
+    </bean>
+</beans>
