@@ -119,6 +119,6 @@ q来自于Decoder;kv来自于Encoder
 
 ### 如何进行训练
 
-<img src="../../Pic/image-20240301105642205.png" alt="image-20240301105642205" style="zoom:50%;" />
+<img src="../../Pic/image-20240301105642205.png" alt="image-20240301105642205" style="zoom:50%;" /> 
 
 还要给出正确答案——Teacher Forcing

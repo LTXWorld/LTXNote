@@ -364,4 +364,197 @@ public class LeetCodeTest {
         }
         return result;
     }
+
+    @Test
+    public String maximumOddBinaryNumber(String s) {
+        int len = s.length();
+        int oneNum = 0;//统计二进制中1的个数
+        for (int i = 0; i < len; i++) {
+            if (s.charAt(i) == '1'){
+                oneNum ++;
+            }
+        }
+        //对于只有一个1的逻辑如何处理？
+//        if (oneNum <= 1){
+//            ret
+//        }
+        StringBuilder result = new StringBuilder();
+        //添加除了末尾1以外的1
+        for (int i = 0; i < oneNum-1; i++) {
+            result.append('1');
+        }
+        //添加其他0
+        for (int i = 0; i < len-oneNum; i++) {
+            result.append('0');
+        }
+        //这一句可以顺便处理只有一个1的逻辑并且加上末尾的1
+        if (oneNum > 0){
+            result.append('1');
+        }
+        return result.toString();
+    }
+    //T2369
+    @Test
+    public boolean validPartition(int[] nums) {
+        //创建dp数组
+        int len = nums.length;
+        boolean[] dp = new boolean[len + 1];//多一个位置为了表示dp[0]
+        dp[0] = true;
+        //
+        for (int i = 2; i <= len; i++) {
+            //处理条件1：两个相等的数
+            if (i >= 2 && nums[i-1] == nums[i-2]){
+                dp[i] = dp[i] || dp[i-2];
+            }
+            //处理条件23，相同点在于二者都是长度为3的
+            if (i >= 3 && ((nums[i-1] == nums[i-2] && nums[i-2] == nums[i-3]) ||
+                          (nums[i-1] == nums[i-2]+1 && nums[i-2] == nums[i-3]+1) )){
+                dp[i] = dp[i] || dp[i-3];
+            }
+        }
+        return dp[len];
+    }
+    //T2834
+    public int minimumPossibleSum1(int n, int target) {
+        //初始化结果数组
+        int[] result = new int[n];
+        int current = 1;//记录真正加入到数组中的数
+        int sum = 0;//最后的返回总和
+        //i代表着结果数组下标，current代表当前想要加入的数，并且current是从1开始的连续正整数
+        for (int i = 0; i < n; current++) {//如果current加入不成，就得往下一个数走，所以这里是current++
+            //检查是否可以将当前的数加入到数组中
+            boolean canAdd = true;
+            for (int j = 0; j < i; j++) {
+                if (result[j] + current == target){
+                    canAdd = false;
+                    break;//比较了数组中当前所有的数和当前要加入的数，二者之和是否等于目标值
+                }
+            }
+            //
+            if (canAdd){
+                result[i] = current;
+                sum += current;
+                i ++;//只有成功添加才移动到数组的下一个为止。
+            }
+        }
+        return sum;
+    }
+    //T2834正解
+    public int minimumPossibleSum(int n, int target) {
+        final int MOD = (int) 1e9 + 7;
+        int m = target / 2;
+        if (n <= m){
+            return (int) ((long) (1+n) * n / 2 % MOD);
+        }
+        return (int) (((long) (1+m) * m / 2 +
+                ((long) target + target + (n-m) - 1) * (n-m) / 2) %MOD);
+    }
+    //T2789Try
+    public long maxArrayValue1(int[] nums) {
+        int len = nums.length;
+        if (len == 1){
+            return nums[0];
+        }
+//        int maxValue = 0;
+        //
+        for (int i = len-1; i > 0; i--) {//for循环这里可以不写i--吗，因为在内部的判断中进行i--
+            if (nums[i] < nums[i-1]){
+//                i --;
+            }else {
+                nums[i-1] = nums[i] + nums[i-1];
+//                i --;
+            }
+        }
+//        //接下来要找操作后的最大值，不一定是第一个元素（可能在中间）但是我直接去找整个数组的最大值也可以吗？
+//        for (int i = 0; i < len; i++) {
+//            maxValue = Math.max(maxValue, nums[i]);
+//        }
+//        return maxValue;
+        return (long) nums[0];
+    }
+
+    //T2789Try
+    @Test
+    public long maxArrayValue(int[] nums) {
+        int len = nums.length;
+        long result = nums[len-1];//将末尾元素（或者首元素）作为结果值的初始化（我觉得这是个好习惯）
+        for (int i = len - 1; i > 0; i--) {
+            if (result >= nums[i-1]){
+                result += nums[i-1];
+            }else {
+                //如果不大于当前元素，就证明后面贪心所加的元素都没这个大，那么结果就要换了
+                result = nums[i-1];
+            }
+        }
+        return result;
+    }
+
+    //T2129Try
+    @Test
+    public String capitalizeTitle1(String title) {
+        int len = title.length();
+        char[] chars = title.toCharArray();
+        int start = 0;
+        //
+        for (int i = 0; i < len;) {
+            int count = 0;//是否还需要一个起始位置来确定范围？
+            while (chars[i] != ' '){
+                //如果不等于空格就继续往后
+                i ++;
+                count ++;
+            }
+            //出这个while循环意味着遇到空格了
+            if (count > 2){
+                //变大写
+            }else {
+                //变小写
+            }
+            start = i + 1;
+        }
+        return " ";
+    }
+    //
+    @Test
+    public String capitalizeTitle(String title) {
+        String[] words = title.split(" ");
+        //
+        for (int i = 0; i < words.length; i++) {
+            String word = words[i];
+            if (word.length() > 2){
+               words[i] = word.substring(0,1).toUpperCase() + word.substring(1).toLowerCase();
+            }else {
+                words[i] = word.toLowerCase();//注意不能使用word，因为字符串的特点会让word指向一个新的字符串
+            }
+        }
+        return String.join(" ",words);//这个方法可以将第二个参数由第一个参数拼接起来
+    }
+
+    //T2684
+    @Test
+    public int maxMoves(int[][] grid) {
+        //声明dp数组
+        int m = grid.length, n = grid[0].length;
+        int[][] dp = new int[m][n];
+        //初始化全部为0
+        for (int j = 1; j < n; j++) {//先遍历行，再遍历列，并且列从第二列开始,因为要往前比较
+            for (int i = 0; i < m; i++) {
+//                int maxMove = -1;
+                //这个fork循环可以检查前面的三个可能位置的情况
+                for(int k = -1; k <= 1; k ++){
+                    if (i + k >= 0 && i + k < m && grid[i + k][j-1] < grid[i][j]){
+                        //保证这个位置在矩阵之内，并且满足大小条件
+                        dp[i][j] = Math.max(dp[i][j], dp[i+k][j-1] + 1);
+                    }
+                }
+//                dp[i][j] = maxMove;
+            }
+        }
+        //去找到最终结果(为什么只需要从最后一列里面找呢）
+        int maxMoves = 0;
+        for(int i = 0; i < m; i ++){
+            maxMoves = Math.max(maxMoves, dp[i][n - 1]);
+        }
+//        return maxMoves == -1 ? 0 : maxMoves;
+        return maxMoves;
+    }
 }
