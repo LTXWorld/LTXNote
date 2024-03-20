@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="9fd0724c-71f9-40cb-81e8-46b17ba04410" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../SpringbootDemo01/SpringbootDemo01.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../SpringbootDemo01/springbootDemo02/src/main/java/com/ltx/springbootdemo02/BookController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../SpringbootDemo01/springboot_Configuration/src/main/resources/application.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../SpringbootDemo01/springboot_Configuration/src/main/resources/application.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/intellij-javadocs-4.0.1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/summer-framework/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/summer-framework/src/main/java/com/ltx/summer/io/Resource.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/summer-framework/src/main/java/com/ltx/summer/io/ResourceResolver.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../springMvcAll/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../springMvcAll/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../springMvcAll/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../springMvcAll/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../springMvcAll/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../springMvcAll/springMvcAll.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../springMvcAll/springmvc_001_ajax/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../springMvcAll/springmvc_001_ajax/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../springMvcAll/springmvc_001_ajax/src/main/webapp/index.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../springMvcAll/springmvc_002_Jump/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../springMvcAll/springmvc_002_Jump/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../springMvcAll/springmvc_002_Jump/src/main/webapp/index.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../springbootDemo04_Byhand/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Homework/UsingJunit/src/test/java/LeetCodeTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Homework/UsingJunit/src/test/java/LeetCodeTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringMvcProject/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringMvcProject/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringMvcProject/.idea/intellij-javadocs-4.0.1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringMvcProject/.idea/jarRepositories.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringMvcProject/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringMvcProject/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringMvcProject/SpringMvcProject_001_demo.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringMvcProject/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringMvcProject/src/main/java/com/ltx/controller/DataSubmitAction.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringMvcProject/src/main/java/com/ltx/controller/DemoAction.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringMvcProject/src/main/java/com/ltx/pojo/User.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringMvcProject/src/main/resources/springmvc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringMvcProject/src/main/webapp/WEB-INF/web.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringMvcProject/src/main/webapp/admin/main.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringMvcProject/src/main/webapp/index.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../LeetCode/简单题目/704二分查找（注意细节）及其衍生题目34 35.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../LeetCode/简单题目/704二分查找（注意细节）及其衍生题目34 35.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../ProjectForC/PracticeForC01" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SpringMvc/Mvc01简述.md" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="workspaceImportEnabled" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="2duJL708dhp9K9qkG8lWujQEdU6" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "jdk.selected.JAVA_MODULE": "corretto-17",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "settings.editor.selected.configurable": "preferences.applicationServers",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="Summer-framework" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="Summer-framework" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="9fd0724c-71f9-40cb-81e8-46b17ba04410" name="Changes" comment="" />
+      <created>1710851971303</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1710851971303</updated>
+      <workItem from="1710851972732" duration="2023000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

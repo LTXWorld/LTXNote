@@ -557,4 +557,63 @@ public class LeetCodeTest {
 //        return maxMoves == -1 ? 0 : maxMoves;
         return maxMoves;
     }
+
+    /**
+     * 给定一个 n 个元素有序的（升序）整型数组 nums 和一个目标值 target  ，
+     * 写一个函数搜索 nums 中的 target，如果目标值存在返回下标，否则返回 -1。
+     * @param nums
+     * @param target
+     * @return
+     */
+    @Test
+    public int search(int[] nums, int target){
+        //方法一，暴力for循环，时间复杂度为n
+        //方法二，由于升序，元素不重复，先去中间找，大于向右，小于向左；并且找的逻辑每次都是向中间
+        //需要双指针来表征位置
+        int len = nums.length;
+        int left = 0;
+        int right = len - 1;//右边是n还是n-1？
+        int mid = right - (right - left) / 2;//(right + left) / 2
+        while (nums[mid] != target){
+            if (nums[mid] > target){
+                right = mid - 1;
+            }else {
+                left = mid + 1;
+            }
+        }
+        return mid;
+    }
+    //T27移除元素,原地移除所给的元素在数组中
+    @Test
+    public int removeElement(int[] nums, int val){
+        /**
+         *没有一点思路当时
+         */
+        return 0;
+    }
+    //T977有序数组的平方，时间复杂度为n的方法
+    @Test
+    public int[] sortedSquares(int[] nums){
+        //如果按照直接的思路，先全部平方然后再排序数组，这个时间复杂度是？
+        /**
+         * 我的思路是从后往前去比较，比两头如果后面的平方比前面的平方小，就交换二者位置上的元素
+         * 但是工作指针是一直在后面元素下的，前面的元素不用动；相当于先排完序了再去全部平方
+         * 这个时间复杂度是两次的遍历，2n也是n吧
+         */
+        int len = nums.length;
+        for(int index = len - 1; index > 0; index --){
+            if (nums[index] * nums[index] < nums[0]*nums[0]){
+                //交换二者位置上的元素
+                int temp = nums[0];
+                nums[0] = nums[index];
+                nums[index] = temp;
+            }
+        }
+        //经历这个for循环之后，已经按照平方排好序了
+        for (int i = 0; i < len; i++) {
+            nums[i] = nums[i] * nums[i];
+        }
+        return nums;
+    }
+
 }
