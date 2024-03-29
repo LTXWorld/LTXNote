@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="springbootThirdParty" />
         <module name="springboot_Configuration" />
         <module name="springbootDemo02" />
         <module name="springbootDemo03" />
@@ -17,6 +18,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="springbootDemo02" options="-parameters" />
       <module name="springbootDemo04_Byhand" options="-parameters" />
+      <module name="springbootThirdParty" options="-parameters" />
       <module name="springboot_Configuration" options="-parameters" />
     </option>
   </component>
