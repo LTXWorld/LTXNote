@@ -1,0 +1,591 @@
+# Redis02实战
+
+## 手机验证码功能
+
+### 判断验证码
+
+业务流程图
+
+<img src="/Users/lutao/GitT/Pic/image-20240405102039335.png" alt="image-20240405102039335" style="zoom:50%;" />
+
+前端发送过来的信息：
+
+<img src="/Users/lutao/GitT/Pic/image-20240405101952754.png" alt="image-20240405101952754" style="zoom:50%;" />
+
+代码实现过程：
+
+在UserController中的sendCode方法调用UserService中的sendCode方法（自创）
+
+- 注意`command+option+b`跳转到对应的接口方法实现类中
+- 实现具体方法快捷键：`option+shift+enter`
+
+### 基于验证码实现登录
+
+前端信息：本次是JSON风格<img src="/Users/lutao/GitT/Pic/image-20240405161840175.png" alt="image-20240405161840175" style="zoom:50%;" /> 
+
+业务流程：
+
+<img src="/Users/lutao/GitT/Pic/image-20240405162349182.png" alt="image-20240405162349182" style="zoom:50%;" />
+
+注意，不论用户是否存在，都要存放到session中
+
+### 登录校验拦截器
+
+Cookie中的JSESSIONID就是用户的登录凭证。
+
+<img src="/Users/lutao/GitT/Pic/image-20240405195437472.png" alt="image-20240405195437472" style="zoom:50%;" />
+
+业务流程
+
+<img src="/Users/lutao/GitT/Pic/image-20240405195424607.png" alt="image-20240405195424607" style="zoom:50%;" />
+
+需要拦截器
+
+<img src="/Users/lutao/GitT/Pic/image-20240405200502141.png" alt="image-20240405200502141" style="zoom:50%;" />
+
+- 为了防止所有的与用户有关的Controller中都要进行校验，所有请求先经过拦截器——将校验逻辑放在拦截器中，再由拦截器得到的信息传递到Controller中——为了线程安全，需要使用ThreadLocal。
+
+代码实现
+
+- 在Util中写一个拦截器
+- 配置拦截器，使其生效
+- 编写Controller中的对应api
+
+### 集群Session共享问题
+
+多台Tomcat服务器不共享session存储空间，换到另外一台服务器上登录信息会丢失——使用Redis代替。
+
+<img src="/Users/lutao/GitT/Pic/image-20240406094136619.png" alt="image-20240406094136619" style="zoom:50%;" />
+
+注意Redis存数据的key-value的数据类型。
+
+### 基于Redis实现共享session登录
+
+1、发送验证码
+
+ <img src="/Users/lutao/GitT/Pic/image-20240406094959548.png" alt="image-20240406094959548" style="zoom:50%;" />
+
+代码实现
+
+- 使用String-String类型
+
+- 注入Redis对象
+- 注意设置有效期
+
+```java
+@Resource
+private StringRedisTemplate stringRedisTemplate;
+//保存验证码到redis，可以将变量换为常量
+stringRedisTemplate.opsForValue().set("login:code:" + phone, code, 2, TimeUnit.MINUTES);
+```
+
+```java
+//根据手机号发送验证码    
+@Override
+    public Result sendCode(String phone, HttpSession session) {
+        //1校验手机号
+        if (RegexUtils.isPhoneInvalid(phone)) {
+            //2如果不符合返回错误信息
+            return Result.fail("手机号格式错误");
+        }
+
+        //3符合，生成验证码
+        String code = RandomUtil.randomNumbers(6);
+        //新方法，保存到Redis中,键值对形式，键为手机号码，值为验证码
+        stringRedisTemplate.opsForValue().set(RedisConstants.LOGIN_CODE_KEY + phone, code, RedisConstants.LOGIN_CODE_TTL, TimeUnit.MINUTES);
+        //5发送验证码
+        log.debug("发送成功"+code);
+        return Result.ok();//返回工具类中Result的OK方法
+    }
+```
+
+
+
+2、短信验证码登录、注册
+
+<img src="/Users/lutao/GitT/Pic/image-20240406095038024.png" alt="image-20240406095038024" style="zoom:50%;" />
+
+登录凭证从sessionID变为了Token，但是不像ID可以自带到cookie里，需要手动传回前端。
+
+代码实现
+
+- 存储时Value采用Hash结构
+- 保存用户信息到redis中
+- 随机生成Token令牌
+- 注意有效期的设置——只要用户有在有效期内访问就不断更新有效期 （见下方拦截器优化）
+
+```java
+    @Override
+    public Result login(LoginFormDTO loginForm, HttpSession session) {
+        //1校验手机号
+        String phone = loginForm.getPhone();
+        if (RegexUtils.isPhoneInvalid(phone)) {
+            //2如果不符合，返回错误信息
+            return Result.fail("手机号格式错误");
+        }
+        //3校验验证码,从Redis中取出验证码
+
+        String cachecode = stringRedisTemplate.opsForValue().get(RedisConstants.LOGIN_CODE_KEY + phone);
+        String code = loginForm.getCode();//这是通过登录信息json中得到用户填的验证码
+        if (cachecode == null || !cachecode.toString().equals(code)){
+            //4如果不一致报错
+            return Result.fail("验证码错误");
+        }
+
+        //5如果一致，根据手机号查询用户 select * from tb_user where phone = ?
+        User user = query().eq("phone", phone).one();//使用到了Mybits-plus
+        //6判断用户是否存在
+        if (user == null){
+            //不存在创建新用户，保存到数据库中（用到了MBP）
+            user = creatUserWithPhone(phone);//一个新的自创方法，创建新用户，并存放到数据库中
+        }
+
+        //7将用户信息保存在Redis中
+        //用户信息保存在Redis中，键为Token，值为Map（内部有多个键值对）
+        String userToken = UUID.randomUUID().toString(true);
+        String userTokenKey = RedisConstants.LOGIN_USER_KEY + userToken;
+        //需要先将对象转为MAP集合,注意放入Redis之前要进行字符串序列化
+        UserDTO userDTO = BeanUtil.copyProperties(user, UserDTO.class);//将数据的粒度降级，UserDTO更加简洁
+        Map<String, Object> map = BeanUtil.beanToMap(
+                userDTO,
+                new HashMap<>(),
+                CopyOptions.create().ignoreNullValue()
+                        .setFieldValueEditor((fileName, fileValue) -> fileValue.toString())//将所有属性变为String类型
+        );
+        //保存进Redis
+        stringRedisTemplate.opsForHash().putAll(userTokenKey, map);
+
+        //设置Redis有效期
+        stringRedisTemplate.expire(userTokenKey, RedisConstants.LOGIN_USER_TTL, TimeUnit.MINUTES);
+        //将token返回给前端，相当于cookie中的sessionID
+
+        return Result.ok(userToken);
+    }
+```
+
+
+
+3、校验登录状态
+
+业务流程
+
+<img src="/Users/lutao/GitT/Pic/image-20240406101830648.png" alt="image-20240406101830648" style="zoom:50%;" />
+
+代码实现
+
+- 注意拦截器并没有交由Spring管理，所以不能像上面那样注入，需要自己创建对象——在MVCconfig对象中进行注入并给到new参数里面。
+- 具体代码见下方优化，这里只给出MvcConfig的代码
+
+```java
+@Configuration
+public class MVCConfigure implements WebMvcConfigurer {
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LoginInterceptor())
+                .excludePathPatterns(//这里在做拦截器的放行
+                        "/user/code",
+                        "/user/login",
+                        "/blog/hot",
+                        "/shop/**",
+                        "/shop-type/**",
+                        "/voucher/**"
+                ).order(1);//order值越大执行优先级越低
+        registry.addInterceptor(new RefreshTokenInterceptor(stringRedisTemplate)).order(0);//拦截所有请求，并且需要先执行
+    }
+}
+```
+
+
+
+
+
+### 登录拦截器优化
+
+为了防止用户在不需要登录的页面上操作，反而导致没有激活有效期，我们需要在前面再加一个拦截器，*拦截一切路径，功能其实是查询Redis用户并保存*；让后面的拦截器去查线程里的用户。
+
+<img src="/Users/lutao/GitT/Pic/image-20240406144814997.png" alt="image-20240406144814997" style="zoom:50%;" />
+
+代码实现
+
+第一个拦截器：Refresh很多功能拷贝自第二个
+
+```java
+public class RefreshTokenInterceptor implements HandlerInterceptor {
+
+    private StringRedisTemplate stringRedisTemplate;
+
+    public RefreshTokenInterceptor(StringRedisTemplate stringRedisTemplate) {
+        this.stringRedisTemplate = stringRedisTemplate;
+    }
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        //1获取token,不需要拦截直接放行即可。
+        String token = request.getHeader("authorization");
+        if (StrUtil.isBlank(token)) {
+            return true;
+        }
+        //基于Token获取redis中的用户
+        String key = RedisConstants.LOGIN_USER_KEY + token;
+        Map<Object, Object> userMap = stringRedisTemplate.opsForHash().entries(key);
+        //3判断用户是否存在
+        if (userMap == null){
+            return true;
+        }
+        //将查询到的Hash数据转为UserDTO对象
+        UserDTO userDTO = BeanUtil.fillBeanWithMap(userMap, new UserDTO(), false);
+        //5存在，保存用户信息到ThreadLocal并放行
+        UserHolder.saveUser(userDTO);
+
+        //刷新Token的有效期
+        stringRedisTemplate.expire(key, RedisConstants.LOGIN_USER_TTL, TimeUnit.MINUTES);
+        return true;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        //业务完成后，移除用户
+        UserHolder.removeUser();
+    }
+}
+
+```
+
+第二个拦截器：
+
+```java
+public class LoginInterceptor implements HandlerInterceptor {
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+              if (UserHolder.getUser() == null) {
+            response.setStatus(401);
+            //拦截
+            return false;
+        }
+        return true;
+    }
+}
+```
+
+
+
+## 缓存
+
+### 根据id查询商铺添加Redis缓存
+
+业务流程：
+
+<img src="/Users/lutao/GitT/Pic/image-20240406153302650.png" alt="image-20240406153302650" style="zoom:50%;" />
+
+代码实现：
+
+- 在Service的具体实现类中
+
+```java
+@Service
+public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IShopService {
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
+
+    @Override
+    public Result queryById(Long id) {
+        String key = "cache:shop: " + id;
+        //1查询redis中的商铺缓存
+        String shopJSON = stringRedisTemplate.opsForValue().get(key);
+        //2存在直接返回
+        if (StrUtil.isNotBlank(shopJSON)) {
+            Shop shop = JSONUtil.toBean(shopJSON, Shop.class);
+            return Result.ok(shop);
+        }
+        //3不存在，根据id查询数据库
+        Shop shop = getById(id);
+        if (shop == null) {
+            //4不存在报错
+            return Result.fail("店铺不存在");
+        }
+        //5存在写入redis并返回
+        stringRedisTemplate.opsForValue().set(key, JSONUtil.toJsonStr(shop));
+        return Result.ok(shop);
+    }
+}
+```
+
+### 缓存更新
+
+- 内存淘汰（低一致性）
+- 超时剔除
+- 主动更新（高一致性）三种方法——通常使用第一种方法。<img src="../Pic/image-20240406161910904.png" alt="image-20240406161910904" style="zoom:50%;" />
+
+选择*更新数据库*与*删除缓存*操作的原子性——**单体系统，放在一个事务中；分布式系统采用分布式事务方案**。
+
+不断地先后操作带来线程安全问题——**先操作数据库，再删除缓存**：因为缓存操作时间快，数据库操作时间太慢。（在缓存未命中时发生更新数据库并完成的机率小）
+
+<img src="../Pic/image-20240406162856638.png" alt="image-20240406162856638" style="zoom:50%;" />
+
+所以最后的方案是：
+
+<img src="../Pic/image-20240406163406855.png" alt="image-20240406163406855" style="zoom:50%;" />
+
+#### 查询商铺的缓存添加超时剔除和主动更新
+
+业务流程
+
+<img src="../Pic/image-20240406163504748.png" alt="image-20240406163504748" style="zoom:50%;" />
+
+代码实现：
+
+```java
+    /**
+     * 更新商铺信息,因为是单体项目所以将其放在同一个事务当中
+     * @param shop
+     * @return
+     */
+    @Override
+    @Transactional
+    public Result update(Shop shop) {
+        Long id = shop.getId();
+        if (id == null) {
+            return Result.fail("店铺id不为空");
+        }
+        //先更新数据库
+        updateById(shop);
+        //再删除缓存
+        stringRedisTemplate.delete(CACHE_SHOP_KEY + id);
+        return Result.ok();
+    }
+```
+
+### 缓存穿透
+
+（恶意）请求缓存和数据库中都没有，缓存永远不会生效，跟透明的一样。
+
+- 缓存空对象（对于恶意请求设置为空值`""`） 可能会存储大量空的数据，
+- 布隆过滤：<img src="../Pic/image-20240406171035593.png" alt="image-20240406171035593" style="zoom:50%;" />有一定的穿透风险（因为多个元素哈希值可能映射到相同的位，出现假阳性）
+
+代码解决缓存穿透：（选择缓存空对象思路）
+
+<img src="../Pic/image-20240407082506163.png" alt="image-20240407082506163" style="zoom:50%;" />
+
+```java
+public Shop queryWithPassThrough(Long id) {
+            String key = CACHE_SHOP_KEY + id;
+            //1查询redis中的商铺缓存
+            String shopJSON = stringRedisTemplate.opsForValue().get(key);
+            //2存在直接返回
+            if (StrUtil.isNotBlank(shopJSON)) {//isNotBlank这个方法意味着只有shopJSON有数据时才会返回true
+                Shop shop = JSONUtil.toBean(shopJSON, Shop.class);
+                return shop;
+            }
+            //从上面下来就剩两种情况：null或者空字符串(空值)
+            if (shopJSON != null) {
+                return null;//这里意味着是空字符串"",根据上面流程图空值就该结束。
+            }
+            //3redis中为null，根据id查询数据库
+            Shop shop = getById(id);
+            if (shop == null) {
+                //4数据库中也没有，并且使用缓存空值来避免缓存穿透
+                stringRedisTemplate.opsForValue().set(key, "", CACHE_NULL_TTL, TimeUnit.MINUTES);//将空值写入redis当中
+                return null;
+            }
+            //5存在写入redis并返回
+            stringRedisTemplate.opsForValue().set(key, JSONUtil.toJsonStr(shop), CACHE_SHOP_TTL, TimeUnit.MINUTES);
+            return shop;
+        }
+```
+
+### 缓存雪崩
+
+同一时段大量缓存中的KEY同时失效或者Redis服务宕机，大量请求直达数据库。
+
+- 给KEY添加TTL随机值
+- 使用Redis集群（微服务）
+- 给业务添加降级限流，多级缓存。
+
+### 缓存击穿（热点KEY）
+
+**被高并发访问并且缓存重建业务复杂**的KEY失效了，会导致无数请求冲击数据库。
+
+- 互斥锁——只有获取锁成功的线程才可以操作数据库和缓存；会导致等待过长，死锁风险。
+- 逻辑过期——在value中添加*逻辑过期时间*（**不是TTL**），开启一个新线程帮自己进行数据库操作；其他线程**可以返回过期数据**<img src="../Pic/image-20240407085022109.png" alt="image-20240407085022109" style="zoom:50%;" />
+
+#### 基于互斥锁代码实现
+
+业务流程：
+
+<img src="../Pic/image-20240407085651300.png" alt="image-20240407085651300" style="zoom:50%;" />
+
+代码实现：利用redis中Spring结构的SETNX方法：`Set the value of a key,only if the key does not exist`
+
+```java
+public Shop queryWithMutex(Long id){
+        String key = CACHE_SHOP_KEY + id;
+        //1查询redis中的商铺缓存
+        String shopJSON = stringRedisTemplate.opsForValue().get(key);
+        //2存在直接返回
+        if (StrUtil.isNotBlank(shopJSON)) {
+            Shop shop = JSONUtil.toBean(shopJSON, Shop.class);
+            return shop;
+        }
+        //需要判断命中是否为空值""
+        if (shopJSON != null) {
+            return null;
+        }
+        //如果redis中没有且不是空值，就要来操作数据库了
+        //获取互斥锁，判断是否获取成功;失败则休眠并重试，成功根据id查询数据库写入Redis
+        String lockKey = "" + id;
+        Shop shop = null;
+        try {
+            boolean isLock = tryGetLock(lockKey);
+            //
+            if (!isLock) {
+                //失败
+                Thread.sleep(50);
+                //休眠完后递归调用重新查询
+                return queryWithMutex(id);
+            }
+            //如果获取锁成功，根据id查询数据库
+            shop = getById(id);
+            if (shop == null) {
+                //4不存在报错，并且使用缓存空对象来避免缓存穿透
+                stringRedisTemplate.opsForValue().set(key, "", CACHE_NULL_TTL, TimeUnit.MINUTES);//将空值写入redis当中
+                return null;
+            }
+            //5存在写入redis并返回
+            stringRedisTemplate.opsForValue().set(key, JSONUtil.toJsonStr(shop), CACHE_SHOP_TTL, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            //释放互斥锁
+            unLock(lockKey);
+        }
+
+        return shop;
+    }
+```
+
+#### 基于逻辑过期
+
+业务流程：<img src="../Pic/image-20240407095734225.png" alt="image-20240407095734225" style="zoom:50%;" />
+
+代码实现：（不管缓存穿透问题）
+
+```java
+    /**
+     * 使用逻辑过期时间将Shop存入缓存redis中,即缓存重建过程代码
+     * @param id 店铺id
+     * @param expireSeconds 过期时间
+     */
+    public void saveShop2Redis(Long id, Long expireSeconds) throws InterruptedException {
+        //查询店铺数据
+        Shop shop = getById(id);
+        Thread.sleep(200);
+        //封装逻辑过期时间
+        RedisData redisData = new RedisData();
+        redisData.setData(shop);//工具类中的redisData对象，将shop作为其data
+        redisData.setExpireTime(LocalDateTime.now().plusSeconds(expireSeconds));
+        //写入redis
+        stringRedisTemplate.opsForValue().set(CACHE_SHOP_KEY + id, JSONUtil.toJsonStr(redisData));
+        //并没有为这个数据设置TTL，这个过期时间是由我们手动在上面管理的
+    }
+```
+
+正式逻辑代码：
+
+```java
+    //开启线程池
+    private static final ExecutorService CACHE_REBUILD_EXECUTOR = Executors.newFixedThreadPool(10);
+    /**
+     * 使用逻辑过期时间来解决缓存击穿，不用考虑缓存穿透
+     * @param id
+     * @return
+     */
+    public Shop queryWithLogicalExpire(Long id) {
+        String key = CACHE_SHOP_KEY + id;
+        //1查询redis中的商铺缓存
+        String shopJSON = stringRedisTemplate.opsForValue().get(key);
+        //2不存在直接返回
+        if (StrUtil.isBlank(shopJSON)) {
+            return null;
+        }
+        //存在，需要判断是否过期
+        //先把json反序列化为对象，拿出其中的逻辑过期时间判断是否过期
+        RedisData redisData = JSONUtil.toBean(shopJSON, RedisData.class);//获取一个更广泛的从Redis中检索到的数据集，此例包含时间和对象
+        JSONObject data = (JSONObject)redisData.getData();//拿到其中存储的数据，格式为JSON。真正的对象data即shop
+        //拿到真正的shop对象和逻辑过期时间
+        Shop shop = JSONUtil.toBean(data, Shop.class);
+        LocalDateTime expireTime = redisData.getExpireTime();
+        //未过期直接返回，已过期缓存重建
+        if (expireTime.isAfter(LocalDateTime.now())){
+            return shop;
+        }
+        //过期，先去获取互斥锁，失败返回店铺，成功开启线程执行重建并返回
+        String lockKey = LOCK_SHOP_KEY + id;
+        boolean isLock = tryGetLock(lockKey);
+        if (isLock){
+            //成功，独立线程缓存重建
+            CACHE_REBUILD_EXECUTOR.submit(() ->{
+                try {
+                    this.saveShop2Redis(id, 30L);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                } finally {
+                    //释放锁
+                    unLock(lockKey);
+                }
+            });
+        }
+        //3redis中为null，根据id查询数据库
+        //5存在写入redis并返回
+        stringRedisTemplate.opsForValue().set(key, JSONUtil.toJsonStr(shop), CACHE_SHOP_TTL, TimeUnit.MINUTES);
+        return shop;
+    }
+```
+
+### 缓存工具封装
+
+将上述解决方案进行封装为工具。 
+
+业务需求：<img src="../Pic/image-20240407170150304.png" alt="image-20240407170150304" style="zoom:50%;" />  
+
+1+3；2+4
+
+解决穿透实例：
+
+```java
+    /**
+     * @param keyPrefix 前缀，需要用户传过来
+     * @param id 根据id查数据库,也是泛型
+     * @param type 告知将来要返回什么类型的数据
+     * @param dbFallBack 用户传来的操作数据库的逻辑,函数式编程
+     * @return
+     * @param <R> 泛型，返回的对象类型不一定
+     */
+    public <R,ID> R queryWithPassThrough(String keyPrefix, ID id, Class<R> type, Function<ID, R> dbFallBack,
+                                         Long time, TimeUnit timeUnit) {
+        String key = keyPrefix + id;
+        //1查询redis中的商铺缓存
+        String json = stringRedisTemplate.opsForValue().get(key);
+        //2存在直接返回
+        if (StrUtil.isNotBlank(json)) {//isNotBlank这个方法意味着只有shopJSON有数据时才会返回true
+            return JSONUtil.toBean(json, type);
+        }
+        //从上面下来就剩两种情况：null或者空字符串
+        if (json != null) {
+            return null;//这里意味着是空字符串"",
+        }
+        //3redis中为null，根据id查询数据库,但是工具类不知道如何查（因为类型不确定）
+        R r = dbFallBack.apply(id);
+        if (r == null) {
+            //4数据库中也没有，并且使用缓存空对象来避免缓存穿透
+            stringRedisTemplate.opsForValue().set(key, "", CACHE_NULL_TTL, TimeUnit.MINUTES);//将空值写入redis当中
+            return null;
+        }
+        //5存在写入redis并返回
+        this.set(key, r, time, timeUnit);
+        return r;
+    }
+```
+
