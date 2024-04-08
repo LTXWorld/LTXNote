@@ -589,3 +589,301 @@ public Shop queryWithMutex(Long id){
     }
 ```
 
+## 秒杀业务
+
+### 全局ID生成器
+
+介绍：
+
+订单表在数据库中没有使用自增ID，因为这样规律明显（用户可以推断）；所以订单ID不应该重复且无规律。
+
+分布式系统下生成全局唯一ID的工具——当前业务内唯一，高可用，高性能，整体递增（有利于数据库操作），安全
+
+<img src="../Pic/image-20240408085211372.png" alt="image-20240408085211372" style="zoom:50%;" />
+
+一个时间戳里还有2的32次方个序列号。
+
+代码实现：
+
+```java
+    /**
+     * 生成全局唯一id，符号位+时间戳+序列号
+     * @param keyPrefix 业务前缀，区分不同业务
+     * @return
+     */
+    public long nextId(String keyPrefix){
+        //生成时间戳:当前时间(秒）- 开始的时间戳
+        LocalDateTime now = LocalDateTime.now();
+        long nowSecond = now.toEpochSecond(ZoneOffset.UTC);
+        long timestamp =  nowSecond - BEGIN_TIMESTAMP;
+
+        //生成序列号，利用redis的自增长,并拼接日期字符串，可以区分，统计某天的订单
+        String date = now.format(DateTimeFormatter.ofPattern("yyyy:MM:dd"));
+        Long count = stringRedisTemplate.opsForValue().increment("icr:" + keyPrefix + ":" + date);
+        //拼接返回,因为返回的不是字符串而是long类型，所以需要进行移位拼接而不是简单的拼接。
+
+        return timestamp << COUNT_BITS | count;//先将时间戳左移留出序列号位置，再使用或运算
+    }
+```
+
+- 每天一个key可以保证不会超过32位的上限，并且可以统计当天的订单
+- `increment()`用于对指定键的值进行自增操作
+- 其中参数是键，redis会对这个键所对应的值（即序列号）进行自增。
+
+### 实现优惠券秒杀下单
+
+业务流程：
+
+ 优惠券分为平价券和特价券——特价券来自于平价券，但是多了一些信息（失效时间，库存等）
+
+<img src="../Pic/image-20240408100437811.png" alt="image-20240408100437811" style="zoom:50%;" />
+
+<img src="../Pic/image-20240408100856875.png" alt="image-20240408100856875" style="zoom:50%;" />
+
+代码实现：
+
+- 创建订单
+- 扣除库存
+- 需要判断秒杀是否开始结束，是否库存充足
+
+```java
+    @Resource
+    private ISeckillVoucherService seckillVoucherService;//在优惠券下单的实现类中注入秒杀的的对象,用的是人家的方法
+
+    @Resource
+    private RedisIDWorker redisIDWorker;
+    /**
+     *
+     * @param voucherId 秒杀券和普通券共享id
+     * @return
+     */
+    @Override
+    @Transactional//因为这段代码涉及了两张数据库表，一张扣减库存（优惠券表），一张更新订单（订单表）所以放在同一事务中
+    public Result seckillVoucher(Long voucherId) {
+        //1查询优惠券
+        SeckillVoucher voucher = seckillVoucherService.getById(voucherId);
+        //2判断秒杀是否开始
+        if (voucher.getBeginTime().isAfter(LocalDateTime.now())) {
+            //
+            return Result.fail("秒杀尚未开始");
+        }
+        //3判断秒杀是否结束
+        if (voucher.getEndTime().isBefore(LocalDateTime.now())) {
+            //
+            return Result.fail("秒杀已经结束");
+        }
+        //4判断库存是否充足
+        if (voucher.getStock() < 1) {
+            return Result.fail("库存不足");
+        }
+        //5扣减库存
+        boolean success = seckillVoucherService.update().
+                setSql("stock = stock - 1").
+                eq("voucher_id", voucherId).update();
+        if (! success){
+            return Result.fail("库存不足");
+        }
+        //6创建订单
+        VoucherOrder voucherOrder = new VoucherOrder();
+        //订单id，用户id。代金券id
+        long orderId = redisIDWorker.nextId("order");
+        voucherOrder.setId(orderId);
+        //
+        Long userId = UserHolder.getUser().getId();
+        voucherOrder.setUserId(userId);
+        //
+        voucherOrder.setVoucherId(voucherId);
+        //订单写入数据库
+        save(voucherOrder);
+
+        return Result.ok(orderId);
+    }
+```
+
+### 超卖问题  
+
+多线程穿插并发问题，那么该如何加锁呢？
+
+#### 悲观锁
+
+<img src="../Pic/image-20240408105454182.png" alt="image-20240408105454182" style="zoom:50%;" />
+
+加锁，串行效率低。
+
+#### 乐观锁
+
+<img src="../Pic/image-20240408105517977.png" alt="image-20240408105517977" style="zoom:50%;" />
+
+不加锁，更新时执行判断（效率高）；**多用于更新数据**。
+
+- 版本号法：每次更新要看版本号是否更改（如果真要更新也要同时更新版本号）<img src="../Pic/image-20240408105812189.png" alt="image-20240408105812189" style="zoom:50%;" />
+
+- CAS法：Compare and Set，因为库存和版本号其实每次都是同步变化，所以可以只用库存来判断<img src="../Pic/image-20240408110147008.png" alt="image-20240408110147008" style="zoom:50%;" />
+
+- 但乐观锁也有弊端，成功率太低：如果很多线程发现前面发生了更改，那么他们都会选择异常，但是业务中的更改并不代表着没有库存
+
+解决失败率高的问题：
+
+- 判断条件改为库存大于0即可，不用必须等于未修改时的值。
+- 分段锁（分批加锁）
+
+#### 代码实现
+
+```java
+        //5扣减库存并加上了乐观"锁"
+        boolean success = seckillVoucherService.update().
+                setSql("stock = stock - 1").//set stock = stock - 1
+                eq("voucher_id", voucherId).gt("stock", 0)//where id = ? and stock > 0
+                .update();//这里怎么把sql语句弄上了
+```
+
+使用了Mybatis-plus
+
+### 一人一单功能
+
+多了一个根据voucherId和userId判断是否已经下过单（订单是否存在）
+
+<img src="../Pic/image-20240408112143716.png" alt="image-20240408112143716" style="zoom:50%;" />
+
+同样会存在线程问题：**多个同样id的用户（一个号好几个人用）**访问导致刚开始都没有买过，一起买会造成一个用户买了很多票。
+
+所以使用悲观锁。
+
+```java
+        Long userId = UserHolder.getUser().getId();
+        synchronized (userId.toString().intern()) {
+            return createVoucherOrder(voucherId);
+        }
+```
+
+```java
+    @Transactional
+    public Result createVoucherOrder(Long voucherId) {
+        //一人一单功能添加
+        Long userId = UserHolder.getUser().getId();
+        //对用户id添加悲观锁
+        int count = query().eq("user_id", userId).eq("voucher_id", voucherId).count();
+        if (count > 0) {
+            //用户已经下过单了
+            return Result.fail("用户已经购买过");
+        }
+
+        //5扣减库存并加上了乐观"锁"
+        boolean success = seckillVoucherService.update().
+                setSql("stock = stock - 1").//set stock = stock - 1
+                        eq("voucher_id", voucherId).gt("stock", 0)//where id = ? and stock > 0
+                .update();//这里怎么把sql语句弄上了
+        if (!success) {
+            return Result.fail("库存不足");
+        }
+
+        //6创建订单
+        VoucherOrder voucherOrder = new VoucherOrder();
+        //订单id，用户id。代金券id
+        long orderId = redisIDWorker.nextId("order");
+        voucherOrder.setId(orderId);
+        //
+        voucherOrder.setUserId(userId);
+        //
+        voucherOrder.setVoucherId(voucherId);
+        //订单写入数据库
+        save(voucherOrder);
+
+        return Result.ok(orderId);
+    }
+```
+
+### 分布式锁版本1
+
+Sychronized存在的问题：多个JVM，多个锁监视器（**集群模式时会存在多个JVM**）每个锁监视器只能监视自己的JVM中的线程。
+
+#### 基本原理
+
+<img src="../Pic/image-20240408160046373.png" alt="image-20240408160046373" style="zoom:50%;" />
+
+<img src="../Pic/image-20240408161139624.png" alt="image-20240408161139624" style="zoom:50%;" />
+
+#### 代码实现
+
+- 获取锁（互斥）`SETNX`
+- 释放锁`DEL`,为解决死锁，设置超时释放。`SET lock thread1 EX 10 NX`将获取锁与超时释放写在一条语句中
+- 使用非阻塞式锁，一旦获取失败就返回不等待。
+- Redis分布式锁中key-value所表示的是锁的名称-锁的值（标识持有锁的线程身份）
+
+```java
+public class SimpleRedisLock implements ILock{
+
+    private static final String KEY_PREFIX = "lock:";
+
+    //需要调用者传递锁的名称和stringRedisTemplate
+    private StringRedisTemplate stringRedisTemplate;
+    private String name;
+
+    public SimpleRedisLock(StringRedisTemplate stringRedisTemplate, String name) {
+        this.stringRedisTemplate = stringRedisTemplate;
+        this.name = name;
+    }
+
+		
+    @Override
+    public boolean tryLock(long timeoutSec) {
+        //获取线程标识
+        long threadId = Thread.currentThread().getId();
+        //获取锁
+        Boolean success = stringRedisTemplate.opsForValue()
+                .setIfAbsent(KEY_PREFIX + name, threadId + "", timeoutSec, TimeUnit.SECONDS);
+        return Boolean.TRUE.equals(success);//防止自动拆箱空指针问题
+    }
+
+    @Override
+    public void unlock() {
+      //释放锁
+        stringRedisTemplate.delete(KEY_PREFIX + name);
+    }
+}
+
+```
+
+```java
+//创建锁对象
+SimpleRedisLock lock = new SimpleRedisLock("order:" + userId, StringRedisTemplate);
+//
+boolean isLock = lock.tryLock(1200);
+//
+if(!isLock){
+  //获取锁失败
+  return Result.fail("一个人只允许下一单");
+}
+try{
+  //获取事务代理对象
+  IVoucherOrderService proxy = (IVoucherOrderService) AopContext.currentProxy();
+  return proxy.createVoucherOrder(voucherId);
+}finally{
+  lock.unlock();
+}
+```
+
+### 分布式锁版本2
+
+如果出现拥有锁的业务业务阻塞，锁会超时释放，其他线程拿到锁；但是当线程1业务完成时，会执行finally中的释放锁将其他线程的锁释放。
+
+- 故释放锁时需要看一下是不是自己的锁
+- <img src="../Pic/image-20240408164937619.png" alt="image-20240408164937619" style="zoom:50%;" />
+
+代码实现
+
+```java
+//释放锁   
+@Override
+    public void unlock() {
+        //判断锁是否是自己的，需要线程标识
+        String threadId = ID_PREFIX + Thread.currentThread().getId();
+        //
+        String id = stringRedisTemplate.opsForValue().get(KEY_PREFIX + name);
+        if (threadId.equals(id)){
+            //判断线程id是否与锁中的id一致
+            stringRedisTemplate.delete(KEY_PREFIX + name);
+        }
+    }
+```
+
