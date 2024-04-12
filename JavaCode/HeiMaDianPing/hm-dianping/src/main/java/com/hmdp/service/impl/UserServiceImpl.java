@@ -13,6 +13,7 @@ import com.hmdp.mapper.UserMapper;
 import com.hmdp.service.IUserService;
 import com.hmdp.utils.RedisConstants;
 import com.hmdp.utils.RegexUtils;
+import com.hmdp.utils.UserHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -119,6 +120,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
         return Result.ok(userToken);
     }
+
+    /**
+     * 根据id查询当前用户信息
+     * @param userId
+     * @return
+     */
+//    @Override
+//    public Result queryUserById(Long userId) {
+//
+//        return null;
+//    }
 
     private User creatUserWithPhone(String phone) {
         //1创建用户
