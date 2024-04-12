@@ -793,7 +793,7 @@ public Shop queryWithMutex(Long id){
     }
 ```
 
-### 分布式锁版本1
+### 分布式锁版本1：SETNX
 
 Sychronized存在的问题：多个JVM，多个锁监视器（**集群模式时会存在多个JVM**）每个锁监视器只能监视自己的JVM中的线程。
 
@@ -808,7 +808,7 @@ Sychronized存在的问题：多个JVM，多个锁监视器（**集群模式时�
 - 获取锁（互斥）`SETNX`
 - 释放锁`DEL`,为解决死锁，设置超时释放。`SET lock thread1 EX 10 NX`将获取锁与超时释放写在一条语句中
 - 使用非阻塞式锁，一旦获取失败就返回不等待。
-- Redis分布式锁中key-value所表示的是锁的名称-锁的值（标识持有锁的线程身份）
+- **Redis分布式锁中key-value所表示的是锁的名称-锁的值**（标识持有锁的线程身份）
 
 ```java
 public class SimpleRedisLock implements ILock{
@@ -863,7 +863,7 @@ try{
 }
 ```
 
-### 分布式锁版本2
+### 版本1加强
 
 如果出现拥有锁的业务业务阻塞，锁会超时释放，其他线程拿到锁；但是当线程1业务完成时，会执行finally中的释放锁将其他线程的锁释放。
 
@@ -883,6 +883,406 @@ try{
         if (threadId.equals(id)){
             //判断线程id是否与锁中的id一致
             stringRedisTemplate.delete(KEY_PREFIX + name);
+        }
+    }
+```
+
+ 但是判断锁与释放锁之间也应该成为一个原子性问题。
+
+#### Lua脚本
+
+一个脚本中执行多条Redis命令，确保这些指令的原子性。
+
+- `redis.call`如何写脚本
+- `EVAL script`如何调用脚本
+- redis需要指定参数key的个数——KEYS数组，AGRV数组，脚本中可以从数组中取这些参数。<img src="../Pic/image-20240409091714004.png" alt="image-20240409091714004" style="zoom:50%;" />
+
+```lua
+-- get得到的是当前key所对应的线程名称，与ARGV（当前线程标识）作比较
+if(redis.call('get', KEYS[1]) == ARGV[1]) then
+  --释放锁
+  return redis.call('DEL', KEYS[1])
+end
+-- 不一致，直接返回。
+return 0
+```
+
+JAVA调用Lua脚本
+
+`public <T> T execute(RedisScript<T> script, List<K> keys, Object ...args){return scriptExecutor.execute(script, keys, args)}`
+
+```java
+    private static final DefaultRedisScript<Long> UNLOCK_SCRPIT;
+    static {
+        UNLOCK_SCRPIT = new DefaultRedisScript<>();
+        UNLOCK_SCRPIT.setLocation(new ClassPathResource("unlock.lua"));
+        UNLOCK_SCRPIT.setResultType(Long.class);
+    }
+//
+    @Override
+    public void unlock() {
+        //调用lua脚本
+        stringRedisTemplate.execute(UNLOCK_SCRPIT, Collections.singletonList(KEY_PREFIX + name),
+                ID_PREFIX + Thread.currentThread().getId());
+    }
+```
+
+### 分布式锁版本2Redisson
+
+SETNX锁不可重入，不可重试，超时释放不合理，主从一致性（主节点与从节点同步）；故使用Redisson框架。
+
+在Redis基础上实现分布式锁的实现。
+
+使用`RedissonClient`代替`stringRedisTemplate`
+
+```java
+@Configuration
+public class RedissonConfig {
+
+    //将redisson客户端创建好交由spring管理
+    @Bean
+    public RedissonClient redissonClient(){
+        //配置
+        Config config = new Config();
+        config.useSingleServer().setAddress("redis://127.0.0.1:6379").setPassword("123321");
+        //创建Redisson对象
+        return Redisson.create(config);
+    }
+}
+```
+
+也不需要自己写trylock和unlock方法，可以直接调用其api。
+
+#### Redisson可重入锁原理
+
+**同一线程无法多次获取一把锁**。
+
+判断是否为同一线程，并设置重用次数。（使用Redis的Hash结构，没有SETNXEX）
+
+源码原理：<img src="../Pic/image-20240409103630876.png" alt="image-20240409103630876" style="zoom:50%;" />
+
+**使用Hash结构记录线程id和重入次数**
+
+<img src="../Pic/image-20240409104758978.png" alt="image-20240409104758978" style="zoom:50%;" />
+
+获取锁：
+
+```java
+boolean isLock = lock.tryLock(long waitTime, long leaseTime, TimeUnit timeUnit)
+```
+
+释放锁：
+
+```lua
+
+```
+
+ 这两段Lua脚本Redisson内部已经封装好了，只需要使用Redisson的方法就好了。
+
+#### Redisson可重试、超时
+
+获取锁只尝试一次就返回false，没有去重试。
+
+源码原理：
+
+<img src="../Pic/image-20240409151731912.png" alt="image-20240409151731912" style="zoom:50%;" />
+
+- 使用信号量和PubSub功能等待释放锁的消息。（只要在时间之内）
+- 利用watchDog，每隔一段时间，重置锁的超时时间（防止某些原因业务未完成就超时释放）
+
+#### Redisson主从问题
+
+ MutiLock使用多个独立的Redis节点，必须在所有节点都获取成功才算成功。
+
+### Redis秒杀优化——异步
+
+之前的操作都是串行执行，并且很多需要操作数据库，所以考虑将操作分组执行——先用Redis完成库存和一人一单的判断，完成抢单业务；再将下单业务放入阻塞队列，开启独立线程异步完成下单（创建订单）操作。
+
+ <img src="../Pic/image-20240409155706013.png" alt="image-20240409155706013" style="zoom:50%;" />
+
+将判断库存秒杀和校验一人一单放在一个Redis逻辑中：
+
+<img src="../Pic/image-20240409160905594.png" alt="image-20240409160905594" style="zoom:50%;" />
+
+**下单和减少库存只需要读取阻塞队列中的用户信息，就可以完成异步下单。**
+
+业务需求：
+
+<img src="../Pic/image-20240409161505612.png" alt="image-20240409161505612" style="zoom:50%;" />
+
+代码实现：
+
+- 添加秒杀券信息到Redis中    
+
+```java
+//
+@Override
+    @Transactional
+    public void addSeckillVoucher(Voucher voucher) {
+        // 保存优惠券
+        save(voucher);
+        // 保存秒杀信息
+        SeckillVoucher seckillVoucher = new SeckillVoucher();
+        seckillVoucher.setVoucherId(voucher.getId());
+        seckillVoucher.setStock(voucher.getStock());
+        seckillVoucher.setBeginTime(voucher.getBeginTime());
+        seckillVoucher.setEndTime(voucher.getEndTime());
+        seckillVoucherService.save(seckillVoucher);
+        //保存秒杀库存到Redis当中
+        stringRedisTemplate.opsForValue().set(SECKILL_STOCK_KEY + voucher.getId(), voucher.getStock().toString());
+    }
+```
+
+- 基于Lua脚本实现两个功能并判断用户是否抢购成功
+
+```lua
+---优惠券id，用户id
+local voucherId = ARGV[1]
+local userId = ARGV[2]
+---数据key:库存，订单
+local stockKey = 'seckill:stock:' .. voucherId
+local orderKey = 'seckill:order' .. voucherId
+
+--脚本业务
+if(tonumber(redis.call('get', stockKey)) <= 0) then
+    --库存不足，返回1
+    return 1
+end
+
+--判断用户是否下单
+if(redis.call('sismember', orderKey, userId) == 1) then
+    --存在与list中，说明重复下单
+    return 2
+end
+
+--否则就扣库存，并且下单
+redis.call('incrby', stockKey, -1)
+--下单（保存用户到list中）
+redis.call('sadd', orderKey, userId)
+```
+
+- 执行脚本判断结果,并把结果封装在阻塞队列中。
+
+```java
+        //执行lua脚本,判断库存以及一人一单
+{Long result = stringRedisTemplate.execute(SECKILL_SCRIPT, Collections.emptyList(),
+                voucherId.toString(), userId.toString());
+        //判断结果是否为0，如果为0才有购买资格
+        int r = result.intValue();
+        if (r != 0){
+            return Result.fail(r == 1 ? "库存不足" : "不能重复下单");
+        }
+        //将下单信息保存在阻塞队列中
+        VoucherOrder voucherOrder = new VoucherOrder();
+        long orderId = redisIDWorker.nextId("order");//订单id
+        voucherOrder.setId(orderId);
+        //用户id
+        voucherOrder.setUserId(userId);
+        //秒杀券id
+        voucherOrder.setVoucherId(voucherId);
+        //加入阻塞队列
+        orderTasks.add(voucherOrder);
+}
+    //阻塞队列,如果队列中没有，线程就会阻塞，有了才会获取。
+    private BlockingQueue<VoucherOrder> orderTasks = new ArrayBlockingQueue<>(1024 * 1024);//存在内存限制问题，数据安全问题
+
+```
+
+- 开启线程任务，从阻塞队列中获取订单信息，异步下单
+
+```java
+    private static final ExecutorService SECKILL_ORDER_EXECUTOR = Executors.newSingleThreadExecutor();//新建线程池
+
+
+//Handler在应用启动时就开始执行，并且会一直运行，等待处理队列中的订单。通过在@PostConstruct标记的方法中提交这个任务，你可以保证这个后台任务在Spring容器完成初始化后立即开始运行
+    @PostConstruct
+    private void init(){
+        SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
+    }
+//
+    private class VoucherOrderHandler implements Runnable{
+        @Override
+        public void run() {
+            //
+            while (true){
+                try {
+                    //获取队列中的订单信息，
+                    VoucherOrder voucherOrder = orderTasks.take();
+                    //创建订单
+                    handleVoucherOrder(voucherOrder);
+                } catch (Exception e) {
+                    log.error("处理订单异常", e);
+                }
+            }
+        }
+    }
+//
+    private void handleVoucherOrder(VoucherOrder voucherOrder) {
+        Long userId = voucherOrder.getUserId();//获取用户
+        //下单
+    }
+
+```
+
+`VoucherOrderHandler`是一个内部类，实现了`Runnable`接口，定义了一个无限循环，使得它可以不断地从某个队列（假设名为`orderTasks`）中获取订单信息`VoucherOrder`对象，并对每个订单执行`handleVoucherOrder(voucherOrder)`方法来进行处理。
+
+### 消息队列改善阻塞队列
+
+独立于JVM以外的服务，不受内存限制；做数据持久化，数据安全。Redis提供了三种自带的方法实现。
+
+#### List
+
+双向链表模拟**阻塞**队列。 
+
+`BRPOP or BLPOP`来实现阻塞效果。
+
+因为作为数据存储，所以肯定支持持久化；但只支持单消费者（一旦拿到就拿走了）
+
+#### PubSub发布订阅
+
+<img src="../Pic/image-20240410095900530.png" alt="image-20240410095900530" style="zoom:50%;" />
+
+不支持持久化
+
+#### Stream
+
+发消息：返回的是消息的唯一标识
+
+<img src="../Pic/image-20240410101329292.png" alt="image-20240410101329292" style="zoom:50%;" />
+
+读消息：
+
+<img src="../Pic/image-20240410102248828.png" alt="image-20240410102248828" style="zoom:50%;" />
+
+消息队列-消费者组
+
+多个消费者划分一组，一组监听同一个队列。
+
+![image-20240410102702527](../Pic/image-20240410102702527.png)
+
+ 创建组：
+
+<img src="../Pic/image-20240410103016752.png" alt="image-20240410103016752" style="zoom:50%;" />
+
+组内读取消息：
+
+<img src="../Pic/image-20240410103417855.png" alt="image-20240410103417855" style="zoom:50%;" />
+
+确认消息
+
+`XACK`确认中出现异常的消息（即已消费但未确认的消息），会加入到PendingList中。
+
+PendingList
+
+每个消费者都有自己的PendingList，来处理未确认的消息。
+
+<img src="../Pic/image-20240410104836119.png" alt="image-20240410104836119" style="zoom:50%;" />
+
+但是没有提到生产者的事情。需要用其他的框架技术。
+
+业务需求
+
+<img src="../Pic/image-20240410145719387.png" alt="image-20240410145719387" style="zoom:50%;" />
+
+代码实现
+
+`XGROUP CREATE stream.orders g1 0 MKSTREAM`创建消费者组，消息队列名称为`stream.orders`
+
+```lua
+--发送消息到队列中，XADD stream.orders * k1 v1 k2 v2
+redis.call('xadd', 'stream.orders', '*', 'userId', userId, 'voucherId', voucherId, 'id', orderId)
+```
+
+修改JAVA代码中的逻辑
+```java
+    public Result seckillVoucher(Long voucherId) {
+        //获取用户
+        Long userId = UserHolder.getUser().getId();
+        //订单id
+        long orderId = redisIDWorker.nextId("order");
+        //执行lua脚本,判断库存以及一人一单,并且将消息发送到消息队列中
+        Long result = stringRedisTemplate.execute(SECKILL_SCRIPT, Collections.emptyList(),
+                voucherId.toString(), userId.toString(), String.valueOf(orderId));
+        //判断结果是否为0，如果为0才有购买资格
+        int r = result.intValue();
+        if (r != 0){
+            return Result.fail(r == 1 ? "库存不足" : "不能重复下单");
+        }
+        //获取代理对象，为了让以后的子线程可以拿到
+        proxy = (IVoucherOrderService) AopContext.currentProxy();
+        //异步下单
+
+        //返回订单id
+        return Result.ok(orderId);
+    }
+```
+
+修改之前阻塞队列为消息队列
+
+```java
+private class VoucherOrderHandler implements Runnable{
+        String queueName = "stream.orders";
+        @Override
+        public void run() {
+            //
+            while (true){
+                try {
+                    //获取消息队列中的订单信息XREADGROUP GROUP g1 c1 COUNT 1 BLOCK 2000 STREAMS streams.order >
+                    List<MapRecord<String, Object, Object>> list = stringRedisTemplate.opsForStream().read(
+                            Consumer.from("g1", "c1"),
+                            StreamReadOptions.empty().count(1).block(Duration.ofSeconds(2)),
+                            StreamOffset.create(queueName, ReadOffset.lastConsumed())
+                    );
+                    //判断消息获取是否成功，如果获取失败继续下一次循环
+                    if (list == null || list.isEmpty()){
+                        continue;
+                    }
+                    //成功就创建订单
+                    //先解析消息中的订单信息
+                    MapRecord<String, Object, Object> record = list.get(0);
+                    Map<Object, Object> values = record.getValue();//发消息时就是拿着key-value形式发的
+                    VoucherOrder voucherOrder = BeanUtil.fillBeanWithMap(values, new VoucherOrder(), true);
+                    handleVoucherOrder(voucherOrder);
+                    //进行ack确认 SACK stream.orders g1 id 这个id是消息队列的id stream.order
+                    stringRedisTemplate.opsForStream().acknowledge(queueName,"g1", record.getId());
+                } catch (Exception e) {
+                    log.error("处理订单异常", e);
+                    //确认出现异常，就放到pendinglist中，再次处理
+                    handlePendingList();
+                }
+            }
+        }
+    }
+```
+
+对Pendinglist中的订单进行再处理
+```java
+private void handlePendingList() {
+        String queueName = "stream.orders";
+        while (true){
+            try {
+                //获取Pending-List中的订单信息XREADGROUP GROUP g1 c1 COUNT 1 BLOCK 2000 STREAMS streams.order >
+                List<MapRecord<String, Object, Object>> list = stringRedisTemplate.opsForStream().read(
+                        Consumer.from("g1", "c1"),
+                        StreamReadOptions.empty().count(1),
+                        StreamOffset.create(queueName, ReadOffset.from("0"))
+                );
+                //判断消息获取是否成功，如果获取失败继续下一次循环
+                if (list == null || list.isEmpty()){
+                    break;//说明pending-list中没有异常消息，需要结束循环
+                }
+                //成功就创建订单
+                //先解析消息中的订单信息
+                MapRecord<String, Object, Object> record = list.get(0);
+                Map<Object, Object> values = record.getValue();//发消息时就是拿着key-value形式发的
+                VoucherOrder voucherOrder = BeanUtil.fillBeanWithMap(values, new VoucherOrder(), true);
+                handleVoucherOrder(voucherOrder);
+                //进行ack确认 SACK stream.orders g1 id 这个id是消息队列的id stream.order
+                stringRedisTemplate.opsForStream().acknowledge(queueName,"g1", record.getId());
+            } catch (Exception e) {
+                //pendinglist中出现异常
+                log.error("处理pendinglist异常", e);
+            }
         }
     }
 ```
