@@ -101,5 +101,8 @@ logger.debug("");
 logger.erro("");
 ```
 
+## SpringIOC原理
 
+### Spring容器
 
+读取Bean配置信息——生成Bean配置注册表——根据表实例化Bean——装配好依赖关系，将Bean放入Spring容器中管理

@@ -8,9 +8,23 @@ Spring*默认情况*下Spring创建的Bean是**单例（Singleton)**的，并且
 
 ## 其他scope
 
-### 应用中的scope
-
 想要其他的scope，应用于不同的场景中（如web应用）；需要引入相关的依赖。
+
+### Request
+
+在一次 Http 请求中，容器会返回该 Bean 的同一实例。而对不同的 Http 请求则会产生新的 Bean，而且该 bean 仅在当前 Http Request 内有效,当前 Http 请求结束，该 bean 实例也将会被销毁。
+
+- 当你需要保持bean状态仅在单个请求内部时。
+- 当bean的数据和状态与特定的HTTP请求强相关时。
+
+### Session
+
+同上，改为一次Http Session中。
+
+- 当你需要在用户的整个会话中保持某些信息和状态时，如用户的偏好设置、登录状态等。
+- 当bean的数据需要跨多个请求共享和保持时。
+
+二者都是为Web用用设计。
 
 ### 自定义scope
 

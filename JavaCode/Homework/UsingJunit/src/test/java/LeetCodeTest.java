@@ -12,6 +12,13 @@ import java.util.*;
  * @Create 2024/3/7 09:42
  */
 public class LeetCodeTest {
+    public class ListNode {
+      int val;
+      ListNode next;
+      ListNode() {}
+      ListNode(int val) { this.val = val; }
+      ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+  }
     @Test
     public boolean isSubsequence392(String s, String t){
         char[] chars1 = s.toCharArray();
@@ -616,4 +623,248 @@ public class LeetCodeTest {
         return nums;
     }
 
+    @Test
+    public void HashsMap(){
+        HashMap<Object, Object> map = new HashMap<>();
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        LinkedList<Integer> linkedList = new LinkedList<>();
+    }
+    //水果成篮
+    @Test
+    public int totalFruit(int[] fruits){
+////        如果按照长度最小的子数组对照来看，本题所求的就是长度最大的连续子数组（只有两个数值）
+//        int end = 0;
+//        int modCount = 0;//几个数值
+//        int result = Integer.MIN_VALUE;
+//        //
+//        for (int start = 0; start < fruits.length; start++) {
+//            modCount ++;
+//            while (modCount > 2){
+//                //当存在超过2个数值，只移动end？
+//                result = Math.max(result, end - start);
+//            }
+//        }
+        //使用哈希表+滑动窗口，不满足条件时剔除前面的元素
+//        key是水果类型（即数组值），value是该值的下标
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int maxResult = 1;
+        int i = 0, j = 0;//i指向前面，j指向后面
+        //
+        while (j < fruits.length){
+            //当哈希表中长度不超过2，意味着满足条件
+            if (map.size() <= 2){
+                map.put(fruits[j], j ++);
+            }
+            //当哈希表长度超过2，意味着有至少3种类型出现，需要进行滑动窗口的剔除（要找到其下标）
+            if (map.size() > 2){
+                int min = fruits.length - 1;
+                for (Integer value : map.values()) {
+                    min = Math.min(min, value);
+                }
+                i = min + 1;//i代表新的位置
+                map.remove(fruits[min]);
+            }
+            //
+            maxResult = Math.max(maxResult, j - i);
+        }
+        return maxResult;
+
+    }
+
+    /**
+     * 59生成螺旋矩阵，设置好边界，按照向右向下向左向上的顺序，进行设置与缩减边界
+     * @param n
+     * @return
+     */
+    @Test
+    public int[][] generateMatrix(int n){
+//        声明结果矩阵并设置边界值
+        int[][] result = new int[n][n];
+        int num = 1;
+        int left = 0;
+        int right = n - 1;
+        int top = 0;
+        int bottom = n - 1;
+//      按照顺序设置值
+        while (num <= n * n){
+//          向右填充，并缩减上边界（谁被填满就缩减谁）
+            for(int i = left; i <= right && num <= n * n; i ++){
+                result[top][i] = num ++;
+            }
+            top ++;
+//          向下填充，并缩减右边界
+            for (int i = top; i <= bottom && num <= n * n; i ++){
+                result[i][right] = num ++;
+            }
+            right --;
+//          向左填充，缩减下边界
+            for (int i = right; i >= left && num <= n * n; i --){
+                result[bottom][i] = num ++;
+            }
+            bottom --;
+//          向上填充,缩减左边界
+            for (int i = bottom; i >= top && num <= n * n; i--) {
+                result[i][left] = num ++;
+            }
+            left ++;
+        }
+        return result;
+    }
+
+    /**
+     * 54顺时针取出矩阵中的元素（矩阵本身并不螺旋）
+     * @param matrix m * n的矩阵
+     * @return
+     */
+    @Test
+    public List<Integer> spiralOrder(int [][] matrix){
+//        设置边界条件
+        List<Integer> list = new ArrayList<>();
+        int m = matrix.length;
+        int n = matrix[0].length;//行列值
+        int left = 0;
+        int right = n - 1;
+        int top = 0;
+        int bottom = m - 1;
+//      遍历取出元素，放入list中返回
+        while (left <= right && top <= bottom){//结束条件应该是由原矩阵的长度所限制
+//            四个方向取出元素，取出后缩减范围
+            for (int i = left; i <= right ; i++) {
+                list.add(matrix[top][i]);
+            }
+            top ++;
+            for (int i = top; i <= bottom; i++) {
+                list.add(matrix[i][right]);
+            }
+            right --;
+//          当矩阵至少有两行或者两列时，才可以进行向左移动和向上移动（可以想象单行单列）
+            if (top <= bottom){
+                for (int i = right; i >= left; i--) {
+                    list.add(matrix[bottom][i]);
+                }
+                bottom --;
+            }
+            if (left <= right){
+                for (int i = bottom; i >= top; i --) {
+                    list.add(matrix[i][left]);
+                }
+                left ++;
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 在单链表中删除值为val的元素
+     * @param head 头结点
+     * @param val 给定值
+     * @return
+     */
+    @Test
+    public ListNode removeElements(ListNode head, int val){
+        /**
+         * 删除某个元素一定要保留其前面位置和后面位置，所以一定需要工作指针和辅助指针
+         * 为了保证头结点的操作统一，需要设置虚拟头结点
+         */
+        if (head == null){
+            return null;
+        }
+        //设置虚拟头结点，辅助指针和工作指针
+        ListNode dummyHead = new ListNode(-1, head);
+        ListNode pre = dummyHead;
+        ListNode cur = head;
+        //
+        while (cur != null){
+            if (cur.val != val){
+                pre = pre.next;
+                cur = cur.next;
+            }else {
+                pre.next = cur.next;
+                cur = cur.next;
+            }
+        }
+        return dummyHead.next;
+    }
+
+    /**
+     * 设计链表
+     */
+    class MyLinkedList{
+        //类的成员变量,链表的长度与虚拟头结点
+        int size;
+        ListNode dummyHead;
+//        此类的构造方法
+        public MyLinkedList() {
+            size = 0;
+            dummyHead = new ListNode(0);
+        }
+//      获取链表第index索引处的值，如果无效则返回-1（从0开始的索引）
+        public int get(int index) {
+            if (index < 0 || index >= size){
+                return -1;
+            }
+            /**
+             * 一个工作指针来遍历链表,找到索引位置
+             */
+            ListNode cur = dummyHead;
+            for (int i = 0; i <= index; i++) {
+                cur = cur.next;
+            }
+            return cur.val;
+        }
+//      头插法，在链表第一个元素之前插入值为val的元素
+        public void addAtHead(int val) {
+            ListNode curNode = new ListNode(val);//当前要插入的节点
+            curNode.next = dummyHead.next;
+            dummyHead.next = curNode;
+            size ++;
+        }
+//      尾插法，将值为val的节点插入到链表的末尾
+        public void addAtTail(int val) {
+            ListNode cur = dummyHead;//cur先来到最后一个结点的位置
+            while (cur.next != null){
+                cur = cur.next;
+            }
+            ListNode node = new ListNode(val);
+            cur.next = node;
+            size ++;
+        }
+//      在链表的第index节点之前添加值为val的节点
+        public void addAtIndex(int index, int val) {
+            /**
+             * 需要确定这个位置前后的节点
+             */
+            if (index > size){
+                return;
+            }
+            if (index < 0){
+                //要求小于0在头部插入，其实只要把index置为0，跟普通插入没区别
+                index = 0;
+            }
+            //进行插入,pre指针定在插入位置之前
+            ListNode pre = dummyHead;
+            for (int i = 0; i < index; i++) {
+                pre = pre.next;//pre来到要插入的节点之前
+            }
+            ListNode node = new ListNode(val);
+            //
+            node.next = pre.next;
+            pre.next = node;
+            size ++;
+        }
+//      如果索引有效，删除索引为index的节点
+        public void deleteAtIndex(int index) {
+            if (index < 0 || index > size-1){
+                return;
+            }
+            //
+            ListNode pre = dummyHead;
+            for (int i = 0; i < index; i++) {
+                pre = pre.next;
+            }
+            //
+            pre.next = pre.next.next;
+            size --;
+        }
+    }
 }

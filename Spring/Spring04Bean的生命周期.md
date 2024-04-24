@@ -2,9 +2,12 @@
 
 ## 粗略的五部曲
 
-- 无参构造执行
+- 无参构造执行，实例化Bean
 - 给Bean对象的属性赋值
-- 初始化Bean（需要自己写init方法）
+- 初始化Bean：（可以自己定义初始化方法）
+  - 如果bean实现了`InitializingBean`接口，Spring将调用其`afterPropertiesSet()`方法。
+  - 如果bean在配置文件中定义了init-method，该方法也会被调用。
+
 - 使用Bean
 - 销毁Bean（需要自己写destory方法），注意需要使用`.castvar`进行转型
 
@@ -31,8 +34,12 @@
 - 第一点，目的是为了传递数据方便使用——（如类的加载器，生产Bean的工厂对象，Bean的名字）
 - 第二点，InitialBean接口
 - 第三点，实现接口中的destory方法
+- 当一个bean实现了`BeanNameAware`接口，它能够在创建过程中获知自己在Spring容器中的名字
+- 实现`BeanFactoryAware`接口的bean可以访问到Spring的`BeanFactory`，可以获取其他的Bean
 
 在生命周期中插入更多的时机代码，为了方便在不同的时机使用Bean。
+
+![image.png](../Pic/1665394697870-15de433a-8d50-4b31-9b75-b2ca7090c1c6.png)
 
 ### 作用域不同，管理方式不同
 

@@ -955,7 +955,7 @@ public class RedissonConfig {
 
 #### Redisson可重入锁原理
 
-**同一线程无法多次获取一把锁**。
+**同一线程无法多次获取一把锁**。（Redission实现了同一线程可以多次获取一把锁）
 
 判断是否为同一线程，并设置重用次数。（使用Redis的Hash结构，没有SETNXEX）
 
@@ -987,7 +987,7 @@ boolean isLock = lock.tryLock(long waitTime, long leaseTime, TimeUnit timeUnit)
 
 <img src="../Pic/image-20240409151731912.png" alt="image-20240409151731912" style="zoom:50%;" />
 
-- 使用信号量和PubSub功能等待释放锁的消息。（只要在时间之内）
+- 使用信号量和PubSub功能等 待释放锁的消息。（只要在时间之内）
 - 利用watchDog，每隔一段时间，重置锁的超时时间（防止某些原因业务未完成就超时释放）
 
 #### Redisson主从问题

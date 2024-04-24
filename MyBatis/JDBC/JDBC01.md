@@ -21,7 +21,7 @@ Java.sql.*包下的接口。
 1. 注册驱动（何种数据库）:`DriveManager.registerDriver(new com.mysql.jdbc.Driver())`注意new的对象来自于不同的数据库jar包中具体实现
 2. 获取连接（进程之间通信）:`Connection conn = DriverManager.getConnection(url,user,password)`
 3. 获取数据库操作对象（专门来执行SQL语句）:`Statement stmt = conn.createStatement()`
-4. 执行SQL语句:` int count = stmt.executeUpdat(sql)(适用于DML)`返回值是影响数据库中的记录条数 
+4. 执行SQL语句:` int count = stmt.executeUpdat(sql)(适用于DML)`返回值是影响数据库中的*记录条数 *
 5. 处理查询结果集:`ResultSet rs = null`存放查询对象 ，`ResultSet rs = stmt.executeQuery(sql)`
 6. 释放资源，先关stmt，再关conn；从小到大依次释放（一定在finally语句块中释放）
 
@@ -128,7 +128,7 @@ public class JDBCTest06 {
 
     /**
      * 表示用户登录是否成功，编写jdbc代码
-     * @param userLoginInfo
+     * @param userLoginInfo 用户登录信息，用户名-密码：key-value Map
      * @return
      */
     private static boolean logIn(Map<String, String> userLoginInfo) {
@@ -205,11 +205,14 @@ public class JDBCTest06 {
 
 ### 解决SQL注入问题
 
-只要用户提供的信息中**不参与SQL编译过程**
+如果用户输入的用户名或密码中包含SQL命令的一部分，就会改变原来的SQL语句的意思。
+
+所以只要用户提供的信息中**不参与SQL编译过程**
 
 - 将Statement对象换为PreparedStatement(其继承了Statement)
 - 原理：*预先对SQL语句框架进行编译，然后再给SQL语句传递“值”*——将单引号+其中内容换为?占位符
 - 先写sql框架，将框架传给DBMS，**进行预先编译。这样就不会改变原sql语句的意图。**
+- 参数是预先处理并作为数据插入到SQL语句中，因此恶意输入（如修改SQL逻辑的代码片段）不会被解释为SQL命令的一部分。
 
 ```java
 PreparedStatement ps = null;

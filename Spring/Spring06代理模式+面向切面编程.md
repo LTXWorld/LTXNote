@@ -1,8 +1,12 @@
-# 代理模式
+# 代理模式（AOP关键）
 
 ## 简述
 
 属于结构型设计模式。 
+
+- 代理主要用于在不修改目标对象（如业务组件）代码的情况下，为其添加额外的行为（比如日志记录、事务管理等
+
+- 代理对象在运行时创建，并在调用目标对象的过程中插入横切逻辑。
 
 代理作用：
 
@@ -115,6 +119,8 @@ public class TimerInvocationHandler implements InvocationHandler {
 
 ### CGLIB动态代理技术
 
+基于**类**的代理方法。
+
 底层是通过**继承**的方式实现，*既可以代理接口又可以代理类*。
 
 以前手写的时候要写子类继承目标类，现在CGLIB技术自动生成子类：<img src="../Pic/image-20240313163511370.png" alt="image-20240313163511370" style="zoom:50%;" />
@@ -131,29 +137,40 @@ Spring的动态代理技术就体现了AOP编程。
 
 ## 七大术语
 
-JoinPoint连接点
+1、JoinPoint连接点
 
 - 在整个程序执行过程中，可以植入切面的**位置**
+- 连接点直接对应于业务方法
 
-Pointcut切点
+2、Pointcut切点
 
-- 真正植入切面的方法，本质是**（业务）方法**。
+- 定义了哪些连接点应该被拦截
 - 一个切点对应多个连接点
 
-Advice通知
+3、Advice通知
 
 - 具体增强的代码（交叉业务的代码），本质是**代码**
 - 根据通知放在不同的连接点上，分为前置，后置，环绕，异常，最终通知。
 
-Aspect切面
+4、Aspect切面
 
 - 切点+通知（在哪个业务附近切入的什么代码）
 
 <img src="../Pic/image-20240313175458683.png" alt="image-20240313175458683" style="zoom:50%;" />
 
+5、目标对象
+
+- 被一个或者多个切面所通知的对象
+
+6、织入
+
+- 将切面应用到目标对象并导致代理对象创建的过程
+
+7、代理
+
 ## 切点表达式
 
-定义通知往那些方法上植入。
+定义通知往哪些方法上植入。
 
 `execution([访问控制权限修饰符] 返回值类型 [全限定类名]方法名(形式参数列表) [异常])`[ ]为可选项
 
@@ -161,6 +178,26 @@ Aspect切面
 - 两个点“..”代表当前包以及子包下的所有类。
 - *表示所有方法。
 - (..) 参数类型和个数随意的方法;(*) 只有一个参数的方法
+
+```java
+// 定义一个切面=切点+建议
+@Aspect
+@Component
+public class LoggingAspect {
+
+    // 定义一个切点，所有名为 'dbOperation*' 的方法都将成为该切点的一部分
+    @Pointcut("execution(* com.example.service.*.dbOperation*(..))")
+    public void databaseOperations() { }
+
+    // 建议（Advice）应用于切点
+    @Before("databaseOperations()")
+    public void logBeforeDbOperation(JoinPoint joinPoint) {
+        System.out.println("即将执行数据库操作: " + joinPoint.getSignature().getName());
+    }
+}
+```
+
+
 
 ## Spring的AOP
 

@@ -2,9 +2,11 @@
 
 核心处理器`DispacterServlet`调用三个强大的方法来解决问题
 
-- `HandlerMapping`从url中解析出资源路径名称（要访问的action名称）
+- `HandlerMapping`从url中解析出*资源路径名称*（要访问的action名称）
 - `HandlerAdapter`适配器，来创建出资源对象（完成了数据注入操作）；进行Service与Dao层的数据操作
-- `ViewResolver`
+- `ViewResolver`，处理视图映射
+
+<img src="../Pic/image-20240419154306082.png" alt="image-20240419154306082" style="zoom:50%;" />
 
 ## WEB请求流程
 

@@ -40,7 +40,7 @@ public static void main(String[] args) throws Exception {
     }
 ```
 
-### 深度剖析Mybatis的事务管理机制
+### Mybatis的事务管理机制
 
 在上面那段代码里，我的sout打印没有出问题，反倒是commit并没有真正提交到我的数据库中，直到我加入了异常捕获`try-catch`之后才得以成功更新。
 

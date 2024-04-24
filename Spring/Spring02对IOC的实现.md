@@ -36,7 +36,7 @@ public class UserService {
 ```java
 public class CustomerService {
     private UserDao userDao;
-
+//使用构造方法注入
     public CustomerService(UserDao userDao) {
         this.userDao = userDao;
     }
@@ -96,7 +96,7 @@ public class CustomerService {
 
 ### 注入List集合和Set集合
 
-注意，List集合有序和重复；Set集合无需有序不重复；使用list标签和Set标签替换Array标签
+注意，List集合有序和重复；Set集合无需有序且不重复；使用list标签和Set标签替换Array标签
 
 ### 注入Map集合
 
@@ -151,9 +151,11 @@ public class CustomerService {
 
 - 使用util标签<img src="../Pic/image-20240308185429760.png" alt="image-20240308185429760" style="zoom:50%;" />
 
-## 自动装配
+## 自动装配AutoWiring
 
 基于**set**方式。
+
+是实现依赖注入的一种方便的工具。
 
 ### 名称
 
@@ -171,6 +173,53 @@ public class CustomerService {
 
 - 需要注意某种类型的实例只能有一个
 - 可以不需要id，因为基于类型。
+
+### 使用
+
+类比上面的构造方法注入，我们需要在xml文件中写比较复杂的`constructor-args`，但是如果使用自动装配，就只需要注解`AutoWired`即可，Spring会自动查找所有类型为所设定的Bean，将其注入。
+
+```java
+@Component
+public class SpellChecker {
+    public SpellChecker() {
+        System.out.println("SpellChecker initialized.");
+    }
+
+    public void checkSpelling(String text) {
+        // 检查拼写的逻辑
+    }
+}
+
+@Component
+public class EmailService {
+    private SpellChecker spellChecker;
+
+    @Autowired
+    public void setSpellChecker(SpellChecker spellChecker) {
+        this.spellChecker = spellChecker;
+    }
+
+    public void sendEmail(String message) {
+        spellChecker.checkSpelling(message);  // 在发送前检查拼写
+        // 发送电子邮件的逻辑
+    }
+}
+
+```
+
+
+
+```xml
+    <!-- 定义SpellChecker bean -->
+    <bean id="spellChecker" class="com.example.SpellChecker">
+    </bean>
+
+    <!-- 定义EmailService bean 并自动按类型装配依赖 -->
+    <bean id="emailService" class="com.example.EmailService" autowire="byType">
+    </bean>
+```
+
+
 
 ## Context引入外部配置文件
 
